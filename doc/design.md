@@ -2,6 +2,11 @@
 
 Draft
 
+- Clients for read and write are put into different packages to reduce import overhead
+  - write client for most TSDB are easy and shared a lot of common things
+  - read client varies a lot based on TSDB's feature
+- Server for read and write are also put into different package for same reason
+
 ## directory layout
 
 - common, models, protobuf etc.

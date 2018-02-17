@@ -20,7 +20,7 @@ Based on original notes from Xephon-K
   - `func (c *Compactor) write(path string, iter KeyIterator, throttle bool) (err error) {`
 - tsdb/engine/tsm1/writer.go
   - `func (t *tsmWriter) Write(key []byte, values Values)` saw this function several times when writing Xephon-K(S)
-- [] TODO: it calls `Encode` etc. which is where all compression algo kick in
+- [] TODO: it calls `Encode` etc. which is where all compression algorithm kicked in
    
 ````go
 // NOTE: some branches and error handling are removed
