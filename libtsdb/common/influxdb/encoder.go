@@ -1,10 +1,12 @@
 package influxdb
 
 import (
-	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 	"strconv"
+
+	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
 
+// ref https://github.com/influxdata/influxdb/blob/master/models/points.go#L2267 appendField
 type Encoder struct {
 	buf []byte
 	// DefaultField is used when encoding single field series, which is the case for most TSDB but not InfluxDB
@@ -50,6 +52,24 @@ func (e *Encoder) WritePointIntTagged(p *pb.PointIntTagged) {
 	e.buf = append(e.buf, e.DefaultField...)
 	e.buf = append(e.buf, '=')
 	e.buf = strconv.AppendInt(e.buf, p.Point.V, 10)
+	e.buf = append(e.buf, ' ')
+	e.buf = strconv.AppendInt(e.buf, p.Point.T, 10)
+}
+
+func (e *Encoder) WritePointDoubleTagged(p *pb.PointDoubleTagged) {
+	e.buf = append(e.buf, p.Name...)
+	e.buf = append(e.buf, ',')
+	for _, tag := range p.Tags {
+		e.buf = append(e.buf, tag.K...)
+		e.buf = append(e.buf, '=')
+		e.buf = append(e.buf, tag.V...)
+		e.buf = append(e.buf, ',')
+	}
+	e.buf[len(e.buf)-1] = ' '
+	e.buf = append(e.buf, e.DefaultField...)
+	e.buf = append(e.buf, '=')
+	// TODO: most part are copy and pasted except this line ...
+	e.buf = strconv.AppendFloat(e.buf, p.Point.V, 'f', -1, 64)
 	e.buf = append(e.buf, ' ')
 	e.buf = strconv.AppendInt(e.buf, p.Point.T, 10)
 }

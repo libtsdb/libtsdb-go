@@ -29,14 +29,14 @@ message PointIntTagged {
     repeated Tag Tags = 3 [(gogoproto.nullable) = false];
 }
 
-message PointFloat {
+message PointDouble {
     int64 T = 1;
-    float V = 2;
+    double V = 2;
 }
 
-message PoinFloatTagged {
+message PointDoubleTagged {
     string Name = 1;
-    PointFloat Point = 2 [(gogoproto.nullable) = false];
+    PointDouble Point = 2 [(gogoproto.nullable) = false];
     repeated Tag Tags = 3 [(gogoproto.nullable) = false];
 }
 
