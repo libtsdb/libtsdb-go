@@ -24,8 +24,9 @@ message PointInt {
 }
 
 message PointIntTagged {
-    PointInt Point = 1;
-    repeated Tag Tags = 2;
+    string Name = 1;
+    PointInt Point = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
 }
 
 message PointFloat {
@@ -34,8 +35,9 @@ message PointFloat {
 }
 
 message PoinFloatTagged {
-    PointFloat Point = 1;
-    repeated Tag Tags = 2;
+    string Name = 1;
+    PointFloat Point = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
 }
 
 message PointString {
@@ -44,8 +46,9 @@ message PointString {
 }
 
 message PointStringTagged {
-    PointString Point = 1;
-    repeated Tag Tags = 2;
+    string Name = 1;
+    PointString Point = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
 }
 
 message PointBool {
@@ -54,6 +57,7 @@ message PointBool {
 }
 
 message PointBoolTagged {
-    PointBool Point = 1;
-    repeated Tag Tags = 2;
+    string Name = 1;
+    PointBool Point = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
 }
