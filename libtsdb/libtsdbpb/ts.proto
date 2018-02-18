@@ -1,0 +1,59 @@
+// protoc --proto_path=/home/at15/workspace/src/:. --gogo_out=. ts.proto
+syntax = "proto3";
+package libtsdb;
+
+option go_package = "libtsdbpb";
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option (gogoproto.sizer_all) = true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.goproto_getters_all) = false;
+
+// TODO: [(gogoproto.nullable) = false, (gogoproto.embed) = true]; on non builtin type, i.e PointInt, in PointIntTagged, generated struct is using pointer
+
+message Tag {
+    string K = 1;
+    string V = 2;
+}
+
+message PointInt {
+    int64 T = 1;
+    int64 V = 2;
+}
+
+message PointIntTagged {
+    PointInt Point = 1;
+    repeated Tag Tags = 2;
+}
+
+message PointFloat {
+    int64 T = 1;
+    float V = 2;
+}
+
+message PoinFloatTagged {
+    PointFloat Point = 1;
+    repeated Tag Tags = 2;
+}
+
+message PointString {
+    int64 T = 1;
+    string V = 2;
+}
+
+message PointStringTagged {
+    PointString Point = 1;
+    repeated Tag Tags = 2;
+}
+
+message PointBool {
+    int64 T = 1;
+    bool V = 2;
+}
+
+message PointBoolTagged {
+    PointBool Point = 1;
+    repeated Tag Tags = 2;
+}
