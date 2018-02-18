@@ -1,0 +1,63 @@
+// protoc --proto_path=/home/at15/workspace/src/:. --gogo_out=. ts.proto
+syntax = "proto3";
+package libtsdb;
+
+option go_package = "libtsdbpb";
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option (gogoproto.sizer_all) = true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.goproto_getters_all) = false;
+
+// TODO: [(gogoproto.nullable) = false, (gogoproto.embed) = true]; on non builtin type, i.e PointInt, in PointIntTagged, generated struct is using pointer
+
+message Tag {
+    string K = 1;
+    string V = 2;
+}
+
+message PointInt {
+    int64 T = 1;
+    int64 V = 2;
+}
+
+message PointIntTagged {
+    string Name = 1;
+    PointInt Point = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
+}
+
+message PointDouble {
+    int64 T = 1;
+    double V = 2;
+}
+
+message PointDoubleTagged {
+    string Name = 1;
+    PointDouble Point = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
+}
+
+message PointString {
+    int64 T = 1;
+    string V = 2;
+}
+
+message PointStringTagged {
+    string Name = 1;
+    PointString Point = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
+}
+
+message PointBool {
+    int64 T = 1;
+    bool V = 2;
+}
+
+message PointBoolTagged {
+    string Name = 1;
+    PointBool Point = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
+}

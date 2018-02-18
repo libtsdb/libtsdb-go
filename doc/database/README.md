@@ -4,6 +4,7 @@ Required list in readme
 
 - status: active|dead
 - repo: https://github.com/some/tsdb
+- website: https://some.tsdb.com
 - company: The TSDB Corp.
 
 Required files for describing each databases, they will be merged into [awesome-time-series-database](https://github.com/xephonhq/awesome-time-series-database) eventually

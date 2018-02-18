@@ -1,6 +1,9 @@
 # Heroic
 
-https://github.com/spotify/heroic
+- oss: true
+- repo: https://github.com/spotify/heroic
+- website: https://spotify.github.io/heroic
+- company: heroic
 
 ## Ref
 
