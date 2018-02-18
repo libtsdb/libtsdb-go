@@ -3,7 +3,10 @@ package influxdb
 import (
 	"strconv"
 
+	"bytes"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
+	"io"
+	"io/ioutil"
 )
 
 // ref https://github.com/influxdata/influxdb/blob/master/models/points.go#L2267 appendField
@@ -36,6 +39,10 @@ func (e *Encoder) Cap() int {
 
 func (e *Encoder) Bytes() []byte {
 	return e.buf
+}
+
+func (e *Encoder) ReadCloser() io.ReadCloser {
+	return ioutil.NopCloser(bytes.NewReader(e.buf))
 }
 
 // temperature,machine=unit42,type=assembly internal=32,external=100 1434055562000000035
