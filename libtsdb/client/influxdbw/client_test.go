@@ -6,13 +6,17 @@ import (
 	"testing"
 )
 
+// TODO: add flag to toggle test base on environ variable ... maybe testutil to gommon, travis etc.
 func TestClient_WriteIntPoint(t *testing.T) {
+	t.Skip("requires influxdb running")
+
 	assert := asst.New(t)
 	c, err := New(Config{
 		Addr:     "http://localhost:8086",
 		Database: "libtsdbtest",
 	})
 	assert.Nil(err)
+	// TODO: util for point generator
 	err = c.WriteIntPoint(&pb.PointIntTagged{
 		Name:  "temperature",
 		Point: pb.PointInt{T: int64(1434055562000000035), V: 35},
@@ -25,6 +29,8 @@ func TestClient_WriteIntPoint(t *testing.T) {
 }
 
 func TestClient_WriteDoublePoint(t *testing.T) {
+	t.Skip("requires influxdb running")
+
 	assert := asst.New(t)
 	c, err := New(Config{
 		Addr:     "http://localhost:8086",
