@@ -18,5 +18,5 @@ install:
   - pwd
 
 script:
-  - make install
+#  - make install
   - make test
