@@ -1,16 +1,15 @@
 package influxdbw
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/url"
 
+	"github.com/dyweb/gommon/requests"
 	"github.com/pkg/errors"
 
-	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
-
 	"github.com/libtsdb/libtsdb-go/libtsdb/common/influxdb"
-	thttp "github.com/libtsdb/libtsdb-go/libtsdb/transport/http"
-	"io/ioutil"
+	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
 
 type Config struct {
@@ -40,7 +39,7 @@ func New(cfg Config) (*Client, error) {
 	baseReq.Header.Set("User-Agent", "libtsdb")
 	c := &Client{
 		enc:     influxdb.NewEncoder(),
-		h:       thttp.NewDefaultClient(),
+		h:       requests.NewDefaultClient(),
 		baseURL: u,
 		baseReq: baseReq,
 	}

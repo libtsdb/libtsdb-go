@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/at15/go.ice"
-  packages = ["ice/util/logutil"]
-  revision = "5aa595e30ed9e64a5aab8cf1021471bf2025de2b"
-
-[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
@@ -24,7 +18,7 @@
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "391e17305c8fd0af4d0d83aad7aba55f768089b7"
+  revision = "7a8a931fc45eb397331e39ecd011017e6454e815"
 
 [[projects]]
   name = "github.com/gogo/protobuf"
@@ -57,6 +51,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5ff3b592161f72e3f503bb45e9f02ee9bb26f52d7c7e92dbaef0bdf6d8ae2f9a"
+  inputs-digest = "d221abe2160607e7b0214a2b8c3d03d49c69c6bc61d3cf39f91559df1eaf01da"
   solver-name = "gps-cdcl"
   solver-version = 1
