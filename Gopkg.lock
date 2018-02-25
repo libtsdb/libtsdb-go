@@ -11,14 +11,16 @@
   branch = "master"
   name = "github.com/dyweb/gommon"
   packages = [
+    "errors",
     "log",
+    "requests",
     "structure",
     "util/color",
     "util/hashutil",
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "7a8a931fc45eb397331e39ecd011017e6454e815"
+  revision = "b950eeb909a37aa06f0820dcdc414a1c53a2f7cf"
 
 [[projects]]
   name = "github.com/gogo/protobuf"
@@ -29,12 +31,6 @@
   ]
   revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
   version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/pkg/errors"
-  packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -48,9 +44,15 @@
   revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
   version = "v1.2.1"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["proxy"]
+  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d221abe2160607e7b0214a2b8c3d03d49c69c6bc61d3cf39f91559df1eaf01da"
+  inputs-digest = "00b4d7ad0b15977ad3dd49e8e52ec2005f0eca50e9fde28ccc5ee15f82de0ec4"
   solver-name = "gps-cdcl"
   solver-version = 1

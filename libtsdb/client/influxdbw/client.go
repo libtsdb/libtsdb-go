@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"github.com/dyweb/gommon/requests"
-	"github.com/pkg/errors"
+	"github.com/dyweb/gommon/errors"
 
 	"github.com/libtsdb/libtsdb-go/libtsdb/common/influxdb"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
@@ -17,6 +17,7 @@ type Config struct {
 	Database string `yaml:"database"`
 }
 
+// TODO: we can create a generic http client, which would works for most tsdb that supports http
 type Client struct {
 	enc     *influxdb.Encoder
 	h       *http.Client
