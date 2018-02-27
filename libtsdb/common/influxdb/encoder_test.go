@@ -10,6 +10,7 @@ import (
 
 func TestEncoder_WritePointIntTagged(t *testing.T) {
 	assert := asst.New(t)
+	// TODO: util for point generator
 	p := &pb.PointIntTagged{
 		Name:  "temperature",
 		Point: pb.PointInt{T: int64(1434055562000000035), V: 35},

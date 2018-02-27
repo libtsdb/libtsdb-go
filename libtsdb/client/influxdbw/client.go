@@ -1,16 +1,15 @@
 package influxdbw
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/url"
 
-	"github.com/pkg/errors"
-
-	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
+	"github.com/dyweb/gommon/errors"
+	"github.com/dyweb/gommon/requests"
 
 	"github.com/libtsdb/libtsdb-go/libtsdb/common/influxdb"
-	thttp "github.com/libtsdb/libtsdb-go/libtsdb/transport/http"
-	"io/ioutil"
+	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
 
 type Config struct {
@@ -18,6 +17,9 @@ type Config struct {
 	Database string `yaml:"database"`
 }
 
+// TODO: we can create a generic http client, which would works for most tsdb that supports http
+// TODO: some may need special handle for batch points, i.e. does heroic allow multi batch?
+// TODO: we can also allow track num bytes, even tracing in the generic client
 type Client struct {
 	enc     *influxdb.Encoder
 	h       *http.Client
@@ -40,7 +42,7 @@ func New(cfg Config) (*Client, error) {
 	baseReq.Header.Set("User-Agent", "libtsdb")
 	c := &Client{
 		enc:     influxdb.NewEncoder(),
-		h:       thttp.NewDefaultClient(),
+		h:       requests.NewDefaultClient(),
 		baseURL: u,
 		baseReq: baseReq,
 	}

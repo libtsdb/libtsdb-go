@@ -24,6 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 
+[[constraint]]
+  name = "github.com/dyweb/gommon"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/gogo/protobuf"

@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/at15/go.ice"
-  packages = ["ice/util/logutil"]
-  revision = "5aa595e30ed9e64a5aab8cf1021471bf2025de2b"
-
-[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
@@ -17,14 +11,16 @@
   branch = "master"
   name = "github.com/dyweb/gommon"
   packages = [
+    "errors",
     "log",
+    "requests",
     "structure",
     "util/color",
     "util/hashutil",
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "391e17305c8fd0af4d0d83aad7aba55f768089b7"
+  revision = "b950eeb909a37aa06f0820dcdc414a1c53a2f7cf"
 
 [[projects]]
   name = "github.com/gogo/protobuf"
@@ -35,12 +31,6 @@
   ]
   revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
   version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/pkg/errors"
-  packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -54,9 +44,15 @@
   revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
   version = "v1.2.1"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["proxy"]
+  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5ff3b592161f72e3f503bb45e9f02ee9bb26f52d7c7e92dbaef0bdf6d8ae2f9a"
+  inputs-digest = "00b4d7ad0b15977ad3dd49e8e52ec2005f0eca50e9fde28ccc5ee15f82de0ec4"
   solver-name = "gps-cdcl"
   solver-version = 1
