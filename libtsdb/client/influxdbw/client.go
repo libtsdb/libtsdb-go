@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/dyweb/gommon/requests"
 	"github.com/dyweb/gommon/errors"
+	"github.com/dyweb/gommon/requests"
 
 	"github.com/libtsdb/libtsdb-go/libtsdb/common/influxdb"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
@@ -18,6 +18,8 @@ type Config struct {
 }
 
 // TODO: we can create a generic http client, which would works for most tsdb that supports http
+// TODO: some may need special handle for batch points, i.e. does heroic allow multi batch?
+// TODO: we can also allow track num bytes, even tracing in the generic client
 type Client struct {
 	enc     *influxdb.Encoder
 	h       *http.Client

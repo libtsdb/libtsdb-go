@@ -3,10 +3,19 @@ package influxdb
 import (
 	"strconv"
 
+	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 	"github.com/libtsdb/libtsdb-go/libtsdb/util/bytesutil"
 )
 
+const (
+	defaultField = "v"
+)
+
+var _ common.Encoder = (*Encoder)(nil)
+
+// Encoders encodes points with tags into InfluxDB's line protocol, it ONLY has a single field called v
+//
 // ref https://github.com/influxdata/influxdb/blob/master/models/points.go#L2267 appendField
 type Encoder struct {
 	bytesutil.Buffer
@@ -18,7 +27,7 @@ type Encoder struct {
 
 func NewEncoder() *Encoder {
 	return &Encoder{
-		DefaultField: "v",
+		DefaultField: defaultField,
 	}
 }
 
