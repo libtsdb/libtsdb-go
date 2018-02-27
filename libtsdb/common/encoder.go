@@ -5,6 +5,8 @@ import (
 )
 
 type Encoder interface {
+	Bytes() []byte
+	Reset()
 	WritePointIntTagged(p *pb.PointIntTagged)
 	WritePointDoubleTagged(p *pb.PointDoubleTagged)
 }

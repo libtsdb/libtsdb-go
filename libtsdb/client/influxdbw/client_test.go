@@ -1,9 +1,10 @@
 package influxdbw
 
 import (
+	"testing"
+
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 	asst "github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // TODO: add flag to toggle test base on environ variable ... maybe testutil to gommon, travis etc.

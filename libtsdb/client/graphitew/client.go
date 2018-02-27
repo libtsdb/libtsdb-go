@@ -1,13 +1,13 @@
 package graphitew
 
 import (
+	"github.com/dyweb/gommon/errors"
 	"net"
 	"time"
 
-	"github.com/dyweb/gommon/errors"
-
 	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common/graphite"
+	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
 
 type Config struct {
@@ -31,4 +31,23 @@ func New(cfg Config) (*Client, error) {
 		enc:  graphite.NewTextEncoder(),
 		conn: conn,
 	}, nil
+}
+
+func (c *Client) WriteIntPoint(p *pb.PointIntTagged) error {
+	c.enc.WritePointIntTagged(p)
+	return c.send()
+}
+
+func (c *Client) WriteDoublePoint(p *pb.PointDoubleTagged) error {
+	c.enc.WritePointDoubleTagged(p)
+	return c.send()
+}
+
+func (c *Client) send() error {
+	_, err := c.conn.Write(c.enc.Bytes())
+	c.enc.Reset()
+	if err != nil {
+		return errors.Wrap(err, "error send http request")
+	}
+	return nil
 }

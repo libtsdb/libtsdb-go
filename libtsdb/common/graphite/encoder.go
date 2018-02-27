@@ -8,13 +8,12 @@ import (
 	"github.com/libtsdb/libtsdb-go/libtsdb/util/bytesutil"
 )
 
-// TODO: how to handle tags, prometheus seems sort them and add to name ...
-// examples/remove_storage/remote_storage_adapter/graphite/client.go
 // TODO: pickle format https://github.com/lomik/graphite-pickle
 
 var _ common.Encoder = (*TextEncoder)(nil)
 
 // TextEncoder encodes points in graphite text format and use tag
+// TODO: text encoder that does not use tag
 type TextEncoder struct {
 	bytesutil.Buffer
 }
@@ -45,6 +44,7 @@ func (e *TextEncoder) WritePointIntTagged(p *pb.PointIntTagged) {
 	e.Buf = append(e.Buf, ' ')
 	// TODO: time precision is second, not ms or ns like other tsdb
 	e.Buf = strconv.AppendInt(e.Buf, p.Point.T, 10)
+	e.Buf = append(e.Buf, '\n')
 }
 
 // NOTE: tag is only supported since 1.1.x
@@ -64,4 +64,5 @@ func (e *TextEncoder) WritePointDoubleTagged(p *pb.PointDoubleTagged) {
 	e.Buf = append(e.Buf, ' ')
 	// TODO: time precision is second, not ms or ns like other tsdb
 	e.Buf = strconv.AppendInt(e.Buf, p.Point.T, 10)
+	e.Buf = append(e.Buf, '\n')
 }

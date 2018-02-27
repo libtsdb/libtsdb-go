@@ -47,6 +47,7 @@ func (e *Encoder) WritePointIntTagged(p *pb.PointIntTagged) {
 	e.Buf = strconv.AppendInt(e.Buf, p.Point.V, 10)
 	e.Buf = append(e.Buf, ' ')
 	e.Buf = strconv.AppendInt(e.Buf, p.Point.T, 10)
+	e.Buf = append(e.Buf, '\n')
 }
 
 func (e *Encoder) WritePointDoubleTagged(p *pb.PointDoubleTagged) {
@@ -65,4 +66,5 @@ func (e *Encoder) WritePointDoubleTagged(p *pb.PointDoubleTagged) {
 	e.Buf = strconv.AppendFloat(e.Buf, p.Point.V, 'f', -1, 64)
 	e.Buf = append(e.Buf, ' ')
 	e.Buf = strconv.AppendInt(e.Buf, p.Point.T, 10)
+	e.Buf = append(e.Buf, '\n')
 }
