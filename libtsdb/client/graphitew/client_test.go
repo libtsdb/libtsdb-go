@@ -8,6 +8,8 @@ import (
 )
 
 func TestClient_WriteIntPoint(t *testing.T) {
+	t.Skip("requires graphite running")
+
 	assert := asst.New(t)
 	c, err := New(Config{
 		Addr: "localhost:2003",
@@ -26,6 +28,8 @@ func TestClient_WriteIntPoint(t *testing.T) {
 }
 
 func TestClient_WriteDoublePoint(t *testing.T) {
+	t.Skip("requires graphite running")
+
 	assert := asst.New(t)
 	c, err := New(Config{
 		Addr: "localhost:2003",
