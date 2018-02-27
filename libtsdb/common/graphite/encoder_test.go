@@ -22,7 +22,7 @@ func TestTextEncoder_WritePointIntTagged(t *testing.T) {
 	}
 	enc := NewTextEncoder()
 	enc.WritePointIntTagged(p)
-	assert.Equal("temperature;machine=unit42;type=assembly 35 1519266078", string(enc.Bytes()))
+	assert.Equal("temperature;machine=unit42;type=assembly 35 1519266078\n", string(enc.Bytes()))
 
 	enc.Reset()
 	assert.Equal(0, enc.Len())
@@ -40,7 +40,7 @@ func TestTextEncoder_WritePointDoubleTagged(t *testing.T) {
 	}
 	enc := NewTextEncoder()
 	enc.WritePointDoubleTagged(p)
-	assert.Equal("temperature;machine=unit42;type=assembly 35.132 1519266078", string(enc.Bytes()))
+	assert.Equal("temperature;machine=unit42;type=assembly 35.132 1519266078\n", string(enc.Bytes()))
 
 	enc.Reset()
 	assert.Equal(0, enc.Len())
