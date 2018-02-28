@@ -18,6 +18,7 @@ message Tag {
     string V = 2;
 }
 
+// === point ===
 message PointInt {
     int64 T = 1;
     int64 V = 2;
@@ -61,3 +62,19 @@ message PointBoolTagged {
     PointBool Point = 2 [(gogoproto.nullable) = false];
     repeated Tag Tags = 3 [(gogoproto.nullable) = false];
 }
+// === point ===
+
+// === series row format ===
+// TODO: using columnar format, where Points is stored as []T, []V instead of [](T,V)
+message SeriesIntTagged {
+    string Name = 1;
+    repeated PointInt Points = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
+}
+
+message SeriesDoubleTagged {
+    string Name = 1;
+    repeated PointDouble Points = 2 [(gogoproto.nullable) = false];
+    repeated Tag Tags = 3 [(gogoproto.nullable) = false];
+}
+// === series row format ===
