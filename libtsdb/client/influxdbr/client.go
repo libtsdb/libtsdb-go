@@ -29,6 +29,9 @@ type Query struct {
 	Database string
 }
 
+// TODO: create response struct to avoid import influxdb
+// TODO: rows are just
+
 func New(cfg Config) (*Client, error) {
 	u, err := url.Parse(cfg.Addr)
 	if err != nil {

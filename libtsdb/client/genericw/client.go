@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/dyweb/gommon/errors"
+	"github.com/dyweb/gommon/requests"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
@@ -20,8 +21,9 @@ type Client struct {
 	h       *http.Client
 	baseReq *http.Request
 	agent   string
-	proto   string
 
+	// stat collected by client after it started running
+	proto              string
 	bytesSend          uint64
 	bytesSendSuccess   uint64
 	intPointWritten    uint64
@@ -29,9 +31,12 @@ type Client struct {
 }
 
 // TODO: pass baseReq etc. normally it should be called by other tsdb client ...
-func New() *Client {
+func New(encoder common.Encoder, req *http.Request) *Client {
 	return &Client{
-		agent: userAgent,
+		enc:     encoder,
+		h:       requests.NewDefaultClient(),
+		baseReq: req,
+		agent:   userAgent,
 	}
 }
 

@@ -18,14 +18,15 @@ func TestClient_WriteIntPoint(t *testing.T) {
 	})
 	assert.Nil(err)
 	// TODO: util for point generator
-	err = c.WriteIntPoint(&pb.PointIntTagged{
-		Name:  "temperature",
+	c.WriteIntPoint(&pb.PointIntTagged{
+		Name:  "temperaturei",
 		Point: pb.PointInt{T: int64(1434055562000000035), V: 35},
 		Tags: []pb.Tag{
 			{K: "machine", V: "unit42"},
 			{K: "type", V: "assembly"},
 		},
 	})
+	err = c.Flush()
 	assert.Nil(err)
 }
 
@@ -39,13 +40,14 @@ func TestClient_WriteDoublePoint(t *testing.T) {
 	})
 	assert.Nil(err)
 	// TODO: influxdb even allow different type in a same series?
-	err = c.WriteDoublePoint(&pb.PointDoubleTagged{
-		Name:  "temperature",
+	c.WriteDoublePoint(&pb.PointDoubleTagged{
+		Name:  "temperatured",
 		Point: pb.PointDouble{T: int64(1434055562000000036), V: 35.132},
 		Tags: []pb.Tag{
 			{K: "machine", V: "unit42"},
 			{K: "type", V: "assembly"},
 		},
 	})
+	err = c.Flush()
 	assert.Nil(err)
 }
