@@ -9,6 +9,7 @@ git:
 # https://github.com/benchhub/oltpbench/blob/config/cleanup-v2/.travis.yml
 go:
   - 1.9.x
+  - "1.10"
   - tip
 
 install:
