@@ -1,22 +1,53 @@
 package kairosdb
 
 import (
+	"bytes"
+	"io"
+	"io/ioutil"
+	"strconv"
+
+	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 	"github.com/libtsdb/libtsdb-go/libtsdb/util/bytesutil"
-	"strconv"
 )
 
 type TelnetEncoder struct {
 	bytesutil.Buffer
 }
 
+var _ common.Encoder = (*JsonEncoder)(nil)
+
 // JsonEncoder support mix of single point and series
 type JsonEncoder struct {
 	bytesutil.Buffer
+	finalized bool
 }
 
 func NewJsonEncoder() *JsonEncoder {
-	return &JsonEncoder{}
+	e := &JsonEncoder{}
+	e.Reset()
+	return e
+}
+
+func (e *JsonEncoder) Reset() {
+	e.Buffer.Reset()
+	// start of json array
+	e.Buf = append(e.Buf, '[')
+}
+
+func (e *JsonEncoder) Bytes() []byte {
+	if e.finalized {
+		return e.Buffer.Bytes()
+	}
+	// replace last extra comma with end of json array
+	e.Buf[len(e.Buf)-1] = ']'
+	e.finalized = true
+	return e.Buffer.Bytes()
+}
+
+// NOTE: we need to override ReadCloser as well, not just Bytes(), because generic http client is using it
+func (e *JsonEncoder) ReadCloser() io.ReadCloser {
+	return ioutil.NopCloser(bytes.NewReader(e.Bytes()))
 }
 
 func (e *JsonEncoder) WritePointIntTagged(p *pb.PointIntTagged) {
@@ -36,10 +67,10 @@ func (e *JsonEncoder) WritePointIntTagged(p *pb.PointIntTagged) {
 		e.Buf = append(e.Buf, `",`...)
 	}
 	e.Buf[len(e.Buf)-1] = '}'
-	e.Buf = append(e.Buf, `}`...)
+	e.Buf = append(e.Buf, `},`...)
 }
 
-func (e *JsonEncoder) WriteDoublePointTagged(p *pb.PointDoubleTagged) {
+func (e *JsonEncoder) WritePointDoubleTagged(p *pb.PointDoubleTagged) {
 	e.Buf = append(e.Buf, `{"name":"`...)
 	e.Buf = append(e.Buf, p.Name...)
 	e.Buf = append(e.Buf, `",`...)
@@ -57,5 +88,5 @@ func (e *JsonEncoder) WriteDoublePointTagged(p *pb.PointDoubleTagged) {
 		e.Buf = append(e.Buf, `",`...)
 	}
 	e.Buf[len(e.Buf)-1] = '}'
-	e.Buf = append(e.Buf, `}`...)
+	e.Buf = append(e.Buf, `},`...)
 }

@@ -36,7 +36,8 @@ func New(encoder common.Encoder, req *http.Request) *Client {
 		enc:     encoder,
 		h:       requests.NewDefaultClient(),
 		baseReq: req,
-		agent:   userAgent,
+		// TODO: user agent is not used
+		agent: userAgent,
 	}
 }
 

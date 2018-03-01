@@ -20,10 +20,11 @@ func TestJsonEncoder_WritePointIntTagged(t *testing.T) {
 	}
 	enc := NewJsonEncoder()
 	enc.WritePointIntTagged(p)
-	assert.Equal(`{"name":"archive_file_search","timestamp":1359786400000,"value":321,"tags":{"host":"server2","region":"en-us"}}`, string(enc.Bytes()))
+	assert.Equal(`[{"name":"archive_file_search","timestamp":1359786400000,"value":321,"tags":{"host":"server2","region":"en-us"}}]`, string(enc.Bytes()))
+	assert.Equal(`[{"name":"archive_file_search","timestamp":1359786400000,"value":321,"tags":{"host":"server2","region":"en-us"}}]`, string(enc.Bytes()))
 }
 
-func TestJsonEncoder_WriteDoublePointTagged(t *testing.T) {
+func TestJsonEncoder_WritePointDoubleTagged(t *testing.T) {
 	assert := asst.New(t)
 
 	p := &pb.PointDoubleTagged{
@@ -35,6 +36,6 @@ func TestJsonEncoder_WriteDoublePointTagged(t *testing.T) {
 		},
 	}
 	enc := NewJsonEncoder()
-	enc.WriteDoublePointTagged(p)
-	assert.Equal(`{"name":"cpu_idle","timestamp":1359786400000,"value":23.2,"tags":{"host":"server2","region":"en-us"}}`, string(enc.Bytes()))
+	enc.WritePointDoubleTagged(p)
+	assert.Equal(`[{"name":"cpu_idle","timestamp":1359786400000,"value":23.2,"tags":{"host":"server2","region":"en-us"}}]`, string(enc.Bytes()))
 }
