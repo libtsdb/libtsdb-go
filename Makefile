@@ -4,7 +4,9 @@ test:
 .PHONY: fmt
 fmt:
 	gofmt -d -l -w ./libtsdb
-
+.PHONY: generate
+generate:
+	gommon generate -v
 
 ##--- docker ---#
 .PHONY: docker-stop-all-containers

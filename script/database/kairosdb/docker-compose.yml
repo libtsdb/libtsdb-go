@@ -1,0 +1,17 @@
+# docker-compose up
+# docker-compose down
+version: '3'
+services:
+  cassandra:
+    image: cassandra:3.11
+# NOTE: depends on condition is ignored by compose file version 3
+# https://docs.docker.com/compose/compose-file/#depends_on
+# https://docs.docker.com/compose/startup-order/
+  kaiorsdb:
+    build: .
+    depends_on:
+      - cassandra
+    links:
+      - cassandra
+    ports:
+      - "8080:8080"

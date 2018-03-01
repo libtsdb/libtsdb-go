@@ -4,6 +4,7 @@
 
 ## Write HTTP
 
+- http://localhost:8080/api/v1/datapoints
 - it has to form for points
   - `[1359788400000, 123]` first is ts in **milliseconds**
   - `{"timestamp": 1359786400000, "value": 321}` should be from OpenTSDB

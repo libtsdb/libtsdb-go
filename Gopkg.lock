@@ -8,7 +8,6 @@
   version = "v1.1.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/dyweb/gommon"
   packages = [
     "errors",
@@ -21,6 +20,7 @@
     "util/runtimeutil"
   ]
   revision = "b950eeb909a37aa06f0820dcdc414a1c53a2f7cf"
+  version = "0.0.5"
 
 [[projects]]
   name = "github.com/gogo/protobuf"
@@ -31,6 +31,16 @@
   ]
   revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/influxdata/influxdb"
+  packages = [
+    "client/v2",
+    "models",
+    "pkg/escape"
+  ]
+  revision = "60d27e6995558f38a39e90b35a92cbac080310a3"
+  version = "v1.4.3"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -53,6 +63,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "00b4d7ad0b15977ad3dd49e8e52ec2005f0eca50e9fde28ccc5ee15f82de0ec4"
+  inputs-digest = "450042d7422b9cf51eefd6cfebb6fc766b9ab1b4805fa3ed7df3c61581a3f1df"
   solver-name = "gps-cdcl"
   solver-version = 1
