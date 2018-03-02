@@ -1,10 +1,8 @@
-FROM java:8-alpine
+FROM openjdk:8-stretch
+# NOTE: we no longer use alphine because it won't run program with cgo and our waitfor it is copied from local env directly
+# where cgo is enabled, this makes the image much larger ...
 
 MAINTAINER at15 at15@dongyue.io
-
-# Thanks to @zbintliff in https://github.com/kairosdb/kairosdb/issues/288
-RUN apk upgrade libssl1.0 --update-cache && \
-    apk add curl ca-certificates bash
 
 RUN mkdir /opt; \
   cd /opt; \
