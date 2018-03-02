@@ -15,9 +15,11 @@ RUN mkdir /opt; \
 COPY kairosdb.properties /opt/kairosdb/conf/kairosdb.properties
 
 # KairosDB must start after Cassandra is running and thrift protocol is enabled
-COPY wait-for-it.sh /usr/bin/wait-for-it
+#COPY wait-for-it.sh /usr/bin/wait-for-it
+COPY waitforit /usr/bin/waitforit
 COPY kairosdb.sh /usr/bin/kairosdb
 
 EXPOSE 4242 8080 2003 2004
+
 ENTRYPOINT []
 CMD [ "/usr/bin/kairosdb" ]

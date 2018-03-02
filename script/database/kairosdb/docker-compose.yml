@@ -4,6 +4,8 @@ version: '3'
 services:
   cassandra:
     image: cassandra:3.11
+    ports:
+      - "9042:9042"
 # NOTE: depends on condition is ignored by compose file version 3
 # https://docs.docker.com/compose/compose-file/#depends_on
 # https://docs.docker.com/compose/startup-order/
