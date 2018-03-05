@@ -20,6 +20,6 @@ func New(cfg config.KairosdbClientConfig) (*genericw.Client, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "can't create base query")
 	}
-	c := genericw.New(kairosdb.NewJsonEncoder(), baseReq)
+	c := genericw.New(kairosdb.Meta(), kairosdb.NewJsonEncoder(), baseReq)
 	return c, nil
 }

@@ -12,10 +12,6 @@ import (
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
 
-const (
-	userAgent = "libtsdb-generic"
-)
-
 var _ libtsdb.WriteClient = (*Client)(nil)
 var _ libtsdb.HttpClient = (*Client)(nil)
 
@@ -25,7 +21,7 @@ type Client struct {
 	enc     common.Encoder
 	h       *http.Client
 	baseReq *http.Request
-	agent   string
+	meta    libtsdb.Meta
 
 	// stat collected by client after it started running
 	proto              string
@@ -35,14 +31,17 @@ type Client struct {
 	doublePointWritten uint64
 }
 
-func New(encoder common.Encoder, req *http.Request) *Client {
+func New(meta libtsdb.Meta, encoder common.Encoder, req *http.Request) *Client {
 	return &Client{
 		enc:     encoder,
 		h:       requests.NewDefaultClient(),
 		baseReq: req,
-		// TODO: user agent is not used
-		agent: userAgent,
+		meta:    meta,
 	}
+}
+
+func (c *Client) Meta() libtsdb.Meta {
+	return c.meta
 }
 
 func (c *Client) SetHttpClient(h *http.Client) {

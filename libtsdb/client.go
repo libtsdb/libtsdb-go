@@ -8,6 +8,7 @@ import (
 
 // TODO: need to return status code etc.
 type WriteClient interface {
+	Meta() Meta
 	WriteIntPoint(*pb.PointIntTagged)
 	WriteDoublePoint(*pb.PointDoubleTagged)
 	Flush() error
@@ -25,4 +26,5 @@ type HttpWriteClient interface {
 // TODO: figure out the interface for read request...
 type ReadClient interface {
 	CreateDatabase(db string) error
+	Meta() Meta
 }

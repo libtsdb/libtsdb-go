@@ -24,6 +24,6 @@ func New(cfg config.InfluxdbClientConfig) (*genericw.Client, error) {
 	params.Set("db", cfg.Database)
 	baseReq.URL.RawQuery = params.Encode()
 	baseReq.Header.Set("User-Agent", "libtsdb")
-	c := genericw.New(influxdb.NewEncoder(), baseReq)
+	c := genericw.New(influxdb.Meta(), influxdb.NewEncoder(), baseReq)
 	return c, nil
 }

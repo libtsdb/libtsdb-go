@@ -33,6 +33,10 @@ func New(cfg config.GraphiteClientConfig) (*Client, error) {
 	}, nil
 }
 
+func (c *Client) Meta() libtsdb.Meta {
+	return graphite.Meta()
+}
+
 func (c *Client) WriteIntPoint(p *pb.PointIntTagged) {
 	c.enc.WritePointIntTagged(p)
 }
