@@ -11,8 +11,6 @@ option (gogoproto.marshaler_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 option (gogoproto.goproto_getters_all) = false;
 
-// TODO: [(gogoproto.nullable) = false, (gogoproto.embed) = true]; on non builtin type, i.e PointInt, in PointIntTagged, generated struct is using pointer
-
 message Tag {
     string K = 1;
     string V = 2;
@@ -63,6 +61,13 @@ message PointBoolTagged {
     repeated Tag Tags = 3 [(gogoproto.nullable) = false];
 }
 // === point ===
+
+// === series without data ===
+message EmptySeries {
+    string Name = 1;
+    repeated Tag Tags = 2 [(gogoproto.nullable) = false];
+}
+// === series without data ===
 
 // === series row format ===
 // TODO: using columnar format, where Points is stored as []T, []V instead of [](T,V)
