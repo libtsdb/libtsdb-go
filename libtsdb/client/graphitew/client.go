@@ -5,11 +5,14 @@ import (
 
 	"github.com/dyweb/gommon/errors"
 
+	"github.com/libtsdb/libtsdb-go/libtsdb"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common/graphite"
 	"github.com/libtsdb/libtsdb-go/libtsdb/config"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
+
+var _ libtsdb.WriteClient = (*Client)(nil)
 
 // Client is a graphite write client using TCP
 type Client struct {
@@ -30,13 +33,15 @@ func New(cfg config.GraphiteClientConfig) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) WriteIntPoint(p *pb.PointIntTagged) error {
+func (c *Client) WriteIntPoint(p *pb.PointIntTagged) {
 	c.enc.WritePointIntTagged(p)
-	return c.send()
 }
 
-func (c *Client) WriteDoublePoint(p *pb.PointDoubleTagged) error {
+func (c *Client) WriteDoublePoint(p *pb.PointDoubleTagged) {
 	c.enc.WritePointDoubleTagged(p)
+}
+
+func (c *Client) Flush() error {
 	return c.send()
 }
 

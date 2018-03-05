@@ -15,7 +15,7 @@ func TestClient_WriteIntPoint(t *testing.T) {
 	assert := asst.New(t)
 	c, err := New(*config.NewGraphiteClientConfig())
 	assert.Nil(err)
-	err = c.WriteIntPoint(&pb.PointIntTagged{
+	c.WriteIntPoint(&pb.PointIntTagged{
 		Name: "temperature",
 		// TODO: time precision ...
 		Point: pb.PointInt{T: int64(1519266078), V: 35},
@@ -24,6 +24,7 @@ func TestClient_WriteIntPoint(t *testing.T) {
 			{K: "type", V: "assembly"},
 		},
 	})
+	err = c.Flush()
 	assert.Nil(err)
 }
 
@@ -33,7 +34,7 @@ func TestClient_WriteDoublePoint(t *testing.T) {
 	assert := asst.New(t)
 	c, err := New(*config.NewGraphiteClientConfig())
 	assert.Nil(err)
-	err = c.WriteDoublePoint(&pb.PointDoubleTagged{
+	c.WriteDoublePoint(&pb.PointDoubleTagged{
 		Name:  "temperature",
 		Point: pb.PointDouble{T: int64(1519266079), V: 35.132},
 		Tags: []pb.Tag{
@@ -41,5 +42,6 @@ func TestClient_WriteDoublePoint(t *testing.T) {
 			{K: "type", V: "assembly"},
 		},
 	})
+	err = c.Flush()
 	assert.Nil(err)
 }

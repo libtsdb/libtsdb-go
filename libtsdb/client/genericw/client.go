@@ -6,6 +6,8 @@ import (
 
 	"github.com/dyweb/gommon/errors"
 	"github.com/dyweb/gommon/requests"
+
+	"github.com/libtsdb/libtsdb-go/libtsdb"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
@@ -13,6 +15,9 @@ import (
 const (
 	userAgent = "libtsdb-generic"
 )
+
+var _ libtsdb.WriteClient = (*Client)(nil)
+var _ libtsdb.HttpClient = (*Client)(nil)
 
 // Client is a generic HTTP based client for write, it is not go routine safe because encoder
 // TODO: allow insecure, because we have https server with self signed certs
@@ -38,6 +43,10 @@ func New(encoder common.Encoder, req *http.Request) *Client {
 		// TODO: user agent is not used
 		agent: userAgent,
 	}
+}
+
+func (c *Client) SetHttpClient(h *http.Client) {
+	c.h = h
 }
 
 // WriteIntPoint only writes to encoder, but does not flush it
