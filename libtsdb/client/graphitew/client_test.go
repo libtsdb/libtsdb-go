@@ -3,17 +3,17 @@ package graphitew
 import (
 	"testing"
 
-	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 	asst "github.com/stretchr/testify/assert"
+
+	"github.com/libtsdb/libtsdb-go/libtsdb/config"
+	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
 
 func TestClient_WriteIntPoint(t *testing.T) {
 	t.Skip("requires graphite running")
 
 	assert := asst.New(t)
-	c, err := New(Config{
-		Addr: "localhost:2003",
-	})
+	c, err := New(*config.NewGraphiteClientConfig())
 	assert.Nil(err)
 	err = c.WriteIntPoint(&pb.PointIntTagged{
 		Name: "temperature",
@@ -31,9 +31,7 @@ func TestClient_WriteDoublePoint(t *testing.T) {
 	t.Skip("requires graphite running")
 
 	assert := asst.New(t)
-	c, err := New(Config{
-		Addr: "localhost:2003",
-	})
+	c, err := New(*config.NewGraphiteClientConfig())
 	assert.Nil(err)
 	err = c.WriteDoublePoint(&pb.PointDoubleTagged{
 		Name:  "temperature",

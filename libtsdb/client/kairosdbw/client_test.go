@@ -3,17 +3,16 @@ package kairosdbw
 import (
 	"testing"
 
+	"github.com/libtsdb/libtsdb-go/libtsdb/config"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 	asst "github.com/stretchr/testify/assert"
 )
 
 func TestClient_WriteIntPoint(t *testing.T) {
 	t.Skip("require kairosdb running")
-	
+
 	assert := asst.New(t)
-	c, err := New(Config{
-		Addr: "http://localhost:8080",
-	})
+	c, err := New(*config.NewKaiorsdbClientConfig())
 	assert.Nil(err)
 	c.WriteIntPoint(&pb.PointIntTagged{
 		Name:  "archive_file_search",

@@ -8,14 +8,10 @@ import (
 
 	"github.com/libtsdb/libtsdb-go/libtsdb/client/genericw"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common/influxdb"
+	"github.com/libtsdb/libtsdb-go/libtsdb/config"
 )
 
-type Config struct {
-	Addr     string `yaml:"addr"`
-	Database string `yaml:"database"`
-}
-
-func New(cfg Config) (*genericw.Client, error) {
+func New(cfg config.InfluxdbClientConfig) (*genericw.Client, error) {
 	u, err := url.Parse(cfg.Addr)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't parse server address")

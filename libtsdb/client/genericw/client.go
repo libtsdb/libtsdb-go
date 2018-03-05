@@ -30,7 +30,6 @@ type Client struct {
 	doublePointWritten uint64
 }
 
-// TODO: pass baseReq etc. normally it should be called by other tsdb client ...
 func New(encoder common.Encoder, req *http.Request) *Client {
 	return &Client{
 		enc:     encoder,

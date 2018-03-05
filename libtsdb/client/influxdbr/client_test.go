@@ -6,16 +6,15 @@ import (
 	"testing"
 
 	asst "github.com/stretchr/testify/assert"
+
+	"github.com/libtsdb/libtsdb-go/libtsdb/config"
 )
 
 func TestClient_CreateDatabase(t *testing.T) {
 	t.Skip("requires influxdb running")
 
 	assert := asst.New(t)
-	c, err := New(Config{
-		Addr:     "http://localhost:8086",
-		Database: "libtsdbtest",
-	})
+	c, err := New(*config.NewInfluxdbClientConfig())
 	assert.Nil(err)
 	res, err := c.CreateDatabase("libtsdbtest")
 	if err == nil {

@@ -3,8 +3,10 @@ package influxdbw
 import (
 	"testing"
 
-	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 	asst "github.com/stretchr/testify/assert"
+
+	"github.com/libtsdb/libtsdb-go/libtsdb/config"
+	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
 
 // TODO: add flag to toggle test base on environ variable ... maybe testutil to gommon, travis etc.
@@ -12,10 +14,7 @@ func TestClient_WriteIntPoint(t *testing.T) {
 	t.Skip("requires influxdb running")
 
 	assert := asst.New(t)
-	c, err := New(Config{
-		Addr:     "http://localhost:8086",
-		Database: "libtsdbtest",
-	})
+	c, err := New(*config.NewInfluxdbClientConfig())
 	assert.Nil(err)
 	// TODO: util for point generator
 	c.WriteIntPoint(&pb.PointIntTagged{
@@ -34,10 +33,7 @@ func TestClient_WriteDoublePoint(t *testing.T) {
 	t.Skip("requires influxdb running")
 
 	assert := asst.New(t)
-	c, err := New(Config{
-		Addr:     "http://localhost:8086",
-		Database: "libtsdbtest",
-	})
+	c, err := New(*config.NewInfluxdbClientConfig())
 	assert.Nil(err)
 	// TODO: influxdb even allow different type in a same series?
 	c.WriteDoublePoint(&pb.PointDoubleTagged{

@@ -1,33 +1,30 @@
 package graphitew
 
 import (
-	"github.com/dyweb/gommon/errors"
 	"net"
-	"time"
+
+	"github.com/dyweb/gommon/errors"
 
 	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common/graphite"
+	"github.com/libtsdb/libtsdb-go/libtsdb/config"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
 
-type Config struct {
-	Addr string `yaml:"addr"`
-}
-
 // Client is a graphite write client using TCP
-// TODO: ref promethus and telegraf
 type Client struct {
+	cfg  config.GraphiteClientConfig
 	enc  common.Encoder
 	conn net.Conn
 }
 
-func New(cfg Config) (*Client, error) {
-	// TODO: allow config timeout
-	conn, err := net.DialTimeout("tcp", cfg.Addr, 5*time.Second)
+func New(cfg config.GraphiteClientConfig) (*Client, error) {
+	conn, err := net.DialTimeout("tcp", cfg.Addr, cfg.Timeout)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't dial tcp")
 	}
 	return &Client{
+		cfg:  cfg,
 		enc:  graphite.NewTextEncoder(),
 		conn: conn,
 	}, nil

@@ -10,12 +10,8 @@ import (
 	"github.com/dyweb/gommon/requests"
 
 	influx "github.com/influxdata/influxdb/client/v2"
+	"github.com/libtsdb/libtsdb-go/libtsdb/config"
 )
-
-type Config struct {
-	Addr     string `yaml:"addr"`
-	Database string `yaml:"database"`
-}
 
 type Client struct {
 	h       *http.Client
@@ -32,7 +28,7 @@ type Query struct {
 // TODO: create response struct to avoid import influxdb
 // TODO: rows are just
 
-func New(cfg Config) (*Client, error) {
+func New(cfg config.InfluxdbClientConfig) (*Client, error) {
 	u, err := url.Parse(cfg.Addr)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't parse server address")

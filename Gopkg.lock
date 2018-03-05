@@ -8,6 +8,7 @@
   version = "v1.1.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/dyweb/gommon"
   packages = [
     "errors",
@@ -19,8 +20,7 @@
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "b950eeb909a37aa06f0820dcdc414a1c53a2f7cf"
-  version = "0.0.5"
+  revision = "a9768ace27e47bd6f1b2afb93fdd73350fb2ab95"
 
 [[projects]]
   name = "github.com/gogo/protobuf"
@@ -58,7 +58,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["proxy"]
-  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+  revision = "22ae77b79946ea320088417e4d50825671d82d57"
 
 [solve-meta]
   analyzer-name = "dep"

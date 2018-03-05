@@ -5,15 +5,13 @@ import (
 	"net/url"
 
 	"github.com/dyweb/gommon/errors"
+
 	"github.com/libtsdb/libtsdb-go/libtsdb/client/genericw"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common/kairosdb"
+	"github.com/libtsdb/libtsdb-go/libtsdb/config"
 )
 
-type Config struct {
-	Addr string `yaml:"addr"`
-}
-
-func New(cfg Config) (*genericw.Client, error) {
+func New(cfg config.KairosdbClientConfig) (*genericw.Client, error) {
 	u, err := url.Parse(cfg.Addr)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't parse server address")
