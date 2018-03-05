@@ -20,6 +20,10 @@ fmt:
 generate:
 	gommon generate -v
 
+.PHONY: loc
+loc:
+	cloc --exclude-dir=vendor,.idea,playground,vagrant,node_modules,libtsdbpb .
+
 ##--- docker ---#
 .PHONY: docker-stop-all-containers
 docker-stop-all-containers:
