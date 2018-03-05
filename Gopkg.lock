@@ -2,6 +2,15 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/at15/go.ice"
+  packages = [
+    "ice/cli",
+    "ice/util/logutil"
+  ]
+  revision = "c8561aa9ce40b5223941dbc8e87552a574f18694"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
@@ -11,14 +20,19 @@
   branch = "master"
   name = "github.com/dyweb/gommon"
   packages = [
+    "cast",
+    "config",
     "errors",
     "log",
+    "log/handlers/cli",
     "requests",
     "structure",
+    "util",
     "util/color",
     "util/hashutil",
     "util/logutil",
-    "util/runtimeutil"
+    "util/runtimeutil",
+    "util/testutil"
   ]
   revision = "a9768ace27e47bd6f1b2afb93fdd73350fb2ab95"
 
@@ -31,6 +45,12 @@
   ]
   revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+  version = "v1.0"
 
 [[projects]]
   name = "github.com/influxdata/influxdb"
@@ -49,6 +69,18 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
+  version = "v0.0.1"
+
+[[projects]]
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
@@ -60,9 +92,15 @@
   packages = ["proxy"]
   revision = "22ae77b79946ea320088417e4d50825671d82d57"
 
+[[projects]]
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
+  version = "v2.1.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "450042d7422b9cf51eefd6cfebb6fc766b9ab1b4805fa3ed7df3c61581a3f1df"
+  inputs-digest = "930f16bc5cffff1e332103df225a11d797d46d5144a4e3dfdc33b1aadc02edd0"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -17,5 +17,12 @@ type HttpClient interface {
 	SetHttpClient(client *http.Client)
 }
 
+type HttpWriteClient interface {
+	WriteClient
+	HttpClient
+}
+
+// TODO: figure out the interface for read request...
 type ReadClient interface {
+	CreateDatabase(db string) error
 }

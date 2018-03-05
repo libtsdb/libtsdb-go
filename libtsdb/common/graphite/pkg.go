@@ -1,7 +1,7 @@
 package graphite
 
 import (
-	"github.com/libtsdb/libtsdb-go/libtsdb/common"
+	"github.com/libtsdb/libtsdb-go/libtsdb"
 	"time"
 )
 
@@ -10,7 +10,7 @@ const (
 	precision = time.Second
 )
 
-var meta = common.Meta{
+var meta = libtsdb.Meta{
 	Name:          name,
 	TimePrecision: precision,
 	SupportTag:    true,
@@ -18,10 +18,10 @@ var meta = common.Meta{
 	SupportDouble: true,
 }
 
-func Meta() common.Meta {
+func Meta() libtsdb.Meta {
 	return meta
 }
 
 func init() {
-	common.RegisterMeta(name, meta)
+	libtsdb.RegisterMeta(name, meta)
 }

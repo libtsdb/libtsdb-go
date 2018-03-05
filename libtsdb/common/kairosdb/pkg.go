@@ -1,8 +1,9 @@
 package kairosdb
 
 import (
-	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	"time"
+
+	"github.com/libtsdb/libtsdb-go/libtsdb"
 )
 
 const (
@@ -10,7 +11,7 @@ const (
 	precision = time.Millisecond
 )
 
-var meta = common.Meta{
+var meta = libtsdb.Meta{
 	Name:          name,
 	TimePrecision: precision,
 	SupportTag:    true,
@@ -18,10 +19,10 @@ var meta = common.Meta{
 	SupportDouble: true,
 }
 
-func Meta() common.Meta {
+func Meta() libtsdb.Meta {
 	return meta
 }
 
 func init() {
-	common.RegisterMeta(name, meta)
+	libtsdb.RegisterMeta(name, meta)
 }
