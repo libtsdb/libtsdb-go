@@ -24,4 +24,16 @@ func TestClient_WriteIntPoint(t *testing.T) {
 	})
 	err = c.Flush()
 	assert.Nil(err)
+	c.WriteIntPoint(&pb.PointIntTagged{
+		Name:  "archive_file_search",
+		Point: pb.PointInt{T: int64(15198719150000), V: 322},
+		Tags: []pb.Tag{
+			{K: "host", V: "server2"},
+			{K: "region", V: "en-us"},
+		},
+	})
+	err = c.Flush()
+	assert.Nil(err)
+
+	// TODO: test server runs using a mock server to avoid issues like https://github.com/xephonhq/xephon-b/issues/36
 }

@@ -30,6 +30,8 @@ func (e *JsonEncoder) Reset() {
 	e.Buffer.Reset()
 	// start of json array
 	e.Buf = append(e.Buf, '[')
+	// FIXED: found via https://github.com/xephonhq/xephon-b/issues/36
+	e.finalized = false
 }
 
 func (e *JsonEncoder) Bytes() []byte {

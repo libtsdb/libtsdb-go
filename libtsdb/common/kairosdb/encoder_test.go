@@ -22,6 +22,10 @@ func TestJsonEncoder_WritePointIntTagged(t *testing.T) {
 	enc.WritePointIntTagged(p)
 	assert.Equal(`[{"name":"archive_file_search","timestamp":1359786400000,"value":321,"tags":{"host":"server2","region":"en-us"}}]`, string(enc.Bytes()))
 	assert.Equal(`[{"name":"archive_file_search","timestamp":1359786400000,"value":321,"tags":{"host":"server2","region":"en-us"}}]`, string(enc.Bytes()))
+	// check reset, found by https://github.com/xephonhq/xephon-b/issues/36
+	enc.Reset()
+	enc.WritePointIntTagged(p)
+	assert.Equal(`[{"name":"archive_file_search","timestamp":1359786400000,"value":321,"tags":{"host":"server2","region":"en-us"}}]`, string(enc.Bytes()))
 }
 
 func TestJsonEncoder_WritePointDoubleTagged(t *testing.T) {
