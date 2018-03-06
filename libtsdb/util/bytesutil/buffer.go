@@ -28,6 +28,6 @@ func (b *Buffer) Bytes() []byte {
 	return b.Buf
 }
 
-func (b *Buffer) ReadCloser() io.ReadCloser {
-	return ioutil.NopCloser(bytes.NewReader(b.Buf))
+func ReadCloser(b []byte) io.ReadCloser {
+	return ioutil.NopCloser(bytes.NewReader(b))
 }

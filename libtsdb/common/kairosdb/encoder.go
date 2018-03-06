@@ -1,9 +1,6 @@
 package kairosdb
 
 import (
-	"bytes"
-	"io"
-	"io/ioutil"
 	"strconv"
 
 	"github.com/libtsdb/libtsdb-go/libtsdb/common"
@@ -43,11 +40,6 @@ func (e *JsonEncoder) Bytes() []byte {
 	e.Buf[len(e.Buf)-1] = ']'
 	e.finalized = true
 	return e.Buffer.Bytes()
-}
-
-// NOTE: we need to override ReadCloser as well, not just Bytes(), because generic http client is using it
-func (e *JsonEncoder) ReadCloser() io.ReadCloser {
-	return ioutil.NopCloser(bytes.NewReader(e.Bytes()))
 }
 
 func (e *JsonEncoder) WritePointIntTagged(p *pb.PointIntTagged) {

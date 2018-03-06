@@ -10,6 +10,7 @@ import (
 	"github.com/libtsdb/libtsdb-go/libtsdb"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
+	"github.com/libtsdb/libtsdb-go/libtsdb/util/bytesutil"
 )
 
 var _ libtsdb.WriteClient = (*Client)(nil)
@@ -73,7 +74,8 @@ func (c *Client) send() error {
 	// TODO: real bytes send also include header etc, which we didn't take into account of bytes send
 	req := &http.Request{}
 	*req = *c.baseReq
-	req.Body = c.enc.ReadCloser()
+	b := c.enc.Bytes()
+	req.Body = bytesutil.ReadCloser(b)
 	res, err := c.h.Do(req)
 	c.enc.Reset()
 	if err != nil {
@@ -85,6 +87,7 @@ func (c *Client) send() error {
 		return errors.Wrap(err, "can't read response body")
 	}
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
+		log.Debugf("%d %s", res.StatusCode, string(b))
 		return errors.New(string(body))
 	}
 
