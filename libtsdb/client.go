@@ -14,6 +14,8 @@ type TSDBClient interface {
 type WriteClient interface {
 	WriteIntPoint(*pb.PointIntTagged)
 	WriteDoublePoint(*pb.PointDoubleTagged)
+	WriteSeriesIntTagged(p *pb.SeriesIntTagged)
+	WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged)
 	Flush() error
 }
 

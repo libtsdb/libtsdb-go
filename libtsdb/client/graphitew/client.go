@@ -45,6 +45,14 @@ func (c *Client) WriteDoublePoint(p *pb.PointDoubleTagged) {
 	c.enc.WritePointDoubleTagged(p)
 }
 
+func (c *Client) WriteSeriesIntTagged(p *pb.SeriesIntTagged) {
+	c.enc.WriteSeriesIntTagged(p)
+}
+
+func (c *Client) WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged) {
+	c.enc.WriteSeriesDoubleTagged(p)
+}
+
 func (c *Client) Flush() error {
 	return c.send()
 }
