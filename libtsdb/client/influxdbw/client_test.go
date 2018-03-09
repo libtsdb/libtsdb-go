@@ -27,6 +27,8 @@ func TestClient_WriteIntPoint(t *testing.T) {
 		},
 	})
 	err = c.Flush()
+	trace := c.Trace()
+	t.Logf("%#v", trace)
 	assert.Nil(err)
 }
 

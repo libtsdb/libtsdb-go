@@ -20,12 +20,9 @@ type TracedHttpClient interface {
 	Trace() HttpTrace
 }
 
-//type HttpResponse interface {
-//	StatusCode() int
-//}
-
 type HttpClient interface {
 	SetHttpClient(client *http.Client)
+	HttpStatusCode() int
 }
 
 type HttpWriteClient interface {

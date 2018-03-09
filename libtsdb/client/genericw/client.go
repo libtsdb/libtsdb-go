@@ -1,19 +1,19 @@
 package genericw
 
 import (
+	"crypto/tls"
 	"io/ioutil"
 	"net/http"
+	"net/http/httptrace"
+	"time"
 
 	"github.com/dyweb/gommon/errors"
 	"github.com/dyweb/gommon/requests"
 
-	"crypto/tls"
 	"github.com/libtsdb/libtsdb-go/libtsdb"
 	"github.com/libtsdb/libtsdb-go/libtsdb/common"
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 	"github.com/libtsdb/libtsdb-go/libtsdb/util/bytesutil"
-	"net/http/httptrace"
-	"time"
 )
 
 var _ libtsdb.WriteClient = (*Client)(nil)
@@ -32,10 +32,13 @@ type Client struct {
 	enableTrace bool
 
 	// stat collected by client
+
 	// single request
 	// TODO: compressed
 	statusCode int
 	proto      string
+	trace      libtsdb.HttpTrace
+
 	// accumulated counters
 	bytesSend          uint64
 	bytesSendSuccess   uint64
@@ -86,8 +89,11 @@ func (c *Client) Flush() error {
 }
 
 func (c *Client) Trace() libtsdb.HttpTrace {
-	// FIXME: return real trace
-	return libtsdb.HttpTrace{}
+	return c.trace
+}
+
+func (c *Client) HttpStatusCode() int {
+	return c.statusCode
 }
 
 func (c *Client) send() error {
@@ -102,14 +108,14 @@ func (c *Client) send() error {
 	req.Body = bytesutil.ReadCloser(b)
 	// based on https://github.com/rakyll/hey/blob/master/requester/requester.go#L141
 	var dnsStart, connStart, tlsStart, reqStart, resStart time.Time
-	var dnsDuration, connDuration, tlsDuration, reqDuration, resDuration time.Duration
+	trace := &c.trace
 	if c.enableTrace {
-		trace := &httptrace.ClientTrace{
+		tracer := &httptrace.ClientTrace{
 			DNSStart: func(info httptrace.DNSStartInfo) {
 				dnsStart = time.Now()
 			},
 			DNSDone: func(info httptrace.DNSDoneInfo) {
-				dnsDuration = time.Now().Sub(dnsStart)
+				trace.DnsDuration = time.Now().Sub(dnsStart)
 			},
 			// TODO: can we just ignore ConnectStart and ConnectDone?
 			GetConn: func(hostPort string) {
@@ -119,9 +125,9 @@ func (c *Client) send() error {
 				// TODO: info also contains Idle etc.
 				now := time.Now()
 				if info.Reused {
-					connDuration = 0
+					trace.ConnDuration = 0
 				} else {
-					connDuration = now.Sub(connStart)
+					trace.ConnDuration = now.Sub(connStart)
 				}
 				reqStart = now
 			},
@@ -130,19 +136,18 @@ func (c *Client) send() error {
 				tlsStart = time.Now()
 			},
 			TLSHandshakeDone: func(state tls.ConnectionState, e error) {
-				tlsDuration = time.Now().Sub(tlsStart)
+				trace.TlsDuration = time.Now().Sub(tlsStart)
 			},
 			WroteRequest: func(info httptrace.WroteRequestInfo) {
-				reqDuration = time.Now().Sub(reqStart)
+				trace.ReqDuration = time.Now().Sub(reqStart)
 			},
 			GotFirstResponseByte: func() {
 				resStart = time.Now()
 			},
 		}
-		req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
+		req = req.WithContext(httptrace.WithClientTrace(req.Context(), tracer))
 	}
 	res, err := c.h.Do(req)
-	resDuration = time.Now().Sub(resStart)
 	c.enc.Reset()
 	if err != nil {
 		return errors.Wrap(err, "error send http request")
@@ -153,14 +158,14 @@ func (c *Client) send() error {
 		return errors.Wrap(err, "can't read response body")
 	}
 	c.statusCode = res.StatusCode
+	trace.ResDuration = time.Now().Sub(resStart)
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
 		// TODO: might disable this since https://github.com/xephonhq/xephon-b/issues/36 is solved
 		// when the server is overwhelmed, it's pretty likely to have tons of errors ...
-		log.Debugf("%d %s", res.StatusCode, string(b))
+		//log.Debugf("%d %s", res.StatusCode, string(b))
 		return errors.New(string(body))
 	}
 	c.proto = res.Proto
 	c.bytesSendSuccess += payloadSize
-	log.Infof("res duration %s", resDuration)
 	return nil
 }
