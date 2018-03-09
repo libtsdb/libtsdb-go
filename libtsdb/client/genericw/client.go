@@ -16,6 +16,7 @@ import (
 	"github.com/libtsdb/libtsdb-go/libtsdb/util/bytesutil"
 )
 
+var _ libtsdb.TSDBClient = (*Client)(nil)
 var _ libtsdb.WriteClient = (*Client)(nil)
 var _ libtsdb.TracedHttpClient = (*Client)(nil)
 var _ libtsdb.HttpClient = (*Client)(nil)

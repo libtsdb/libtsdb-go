@@ -70,7 +70,6 @@ message EmptySeries {
 // === series without data ===
 
 // === series row format ===
-// TODO: using columnar format, where Points is stored as []T, []V instead of [](T,V)
 message SeriesIntTagged {
     string Name = 1;
     repeated PointInt Points = 2 [(gogoproto.nullable) = false];
@@ -83,3 +82,19 @@ message SeriesDoubleTagged {
     repeated Tag Tags = 3 [(gogoproto.nullable) = false];
 }
 // === series row format ===
+
+// === series column format ==
+message SeriesIntTaggedColumnar {
+    string Name = 1;
+    repeated int64 Times = 2;
+    repeated int64 Values = 3;
+    repeated Tag Tags = 4 [(gogoproto.nullable) = false];
+}
+
+message SeriesDoubleTaggedColumnar {
+    string Name = 1;
+    repeated int64 Times = 2;
+    repeated double Values = 3;
+    repeated Tag Tags = 4 [(gogoproto.nullable) = false];
+}
+// === series column format ==

@@ -6,9 +6,12 @@ import (
 	pb "github.com/libtsdb/libtsdb-go/libtsdb/libtsdbpb"
 )
 
-// TODO: need to return status code etc.
-type WriteClient interface {
+// TSBClient returns meta of the database including its protocol, data type support
+type TSDBClient interface {
 	Meta() Meta
+}
+
+type WriteClient interface {
 	WriteIntPoint(*pb.PointIntTagged)
 	WriteDoublePoint(*pb.PointDoubleTagged)
 	Flush() error
@@ -33,5 +36,4 @@ type HttpWriteClient interface {
 // TODO: figure out the interface for read request...
 type ReadClient interface {
 	CreateDatabase(db string) error
-	Meta() Meta
 }
