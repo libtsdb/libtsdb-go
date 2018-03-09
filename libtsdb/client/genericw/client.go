@@ -107,37 +107,37 @@ func (c *Client) send() error {
 
 	// trace based on https://github.com/rakyll/hey/blob/master/requester/requester.go#L141
 	trace := &c.trace
-	trace.Start = time.Now()
+	trace.Start = time.Now().UnixNano()
 	if c.enableTrace {
 		tracer := &httptrace.ClientTrace{
 			DNSStart: func(info httptrace.DNSStartInfo) {
-				trace.DNSStart = time.Now()
+				trace.DNSStart = time.Now().UnixNano()
 			},
 			DNSDone: func(info httptrace.DNSDoneInfo) {
-				trace.DNSDone = time.Now()
+				trace.DNSDone = time.Now().UnixNano()
 			},
 			// TODO: can we just ignore ConnectStart and ConnectDone?
 			GetConn: func(hostPort string) {
-				trace.GetConn = time.Now()
+				trace.GetConn = time.Now().UnixNano()
 			},
 			GotConn: func(info httptrace.GotConnInfo) {
-				now := time.Now()
+				now := time.Now().UnixNano()
 				trace.Reused = info.Reused
 				trace.GotConn = now
 				trace.ReqStart = now
 			},
 			// TODO: only tls handshake when new connection is established?
 			TLSHandshakeStart: func() {
-				trace.TLSStart = time.Now()
+				trace.TLSStart = time.Now().UnixNano()
 			},
 			TLSHandshakeDone: func(state tls.ConnectionState, e error) {
-				trace.TLSStop = time.Now()
+				trace.TLSStop = time.Now().UnixNano()
 			},
 			WroteRequest: func(info httptrace.WroteRequestInfo) {
-				trace.ReqDone = time.Now()
+				trace.ReqDone = time.Now().UnixNano()
 			},
 			GotFirstResponseByte: func() {
-				trace.ResStart = time.Now()
+				trace.ResStart = time.Now().UnixNano()
 			},
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), tracer))
@@ -153,7 +153,7 @@ func (c *Client) send() error {
 		return errors.Wrap(err, "can't read response body")
 	}
 	trace.StatusCode = res.StatusCode
-	trace.ResDone = time.Now()
+	trace.ResDone = time.Now().UnixNano()
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
 		// FIXED: log due to https://github.com/xephonhq/xephon-b/issues/36
 		//log.Debugf("%d %s", res.StatusCode, string(b))

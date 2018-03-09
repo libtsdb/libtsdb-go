@@ -1,20 +1,18 @@
 package libtsdb
 
-import "time"
-
 // TODO: it might be more efficient to use unix timestamp
 type HttpTrace struct {
 	StatusCode int
-	Start      time.Time
-	DNSStart   time.Time
-	DNSDone    time.Time
-	GetConn    time.Time
-	GotConn    time.Time
+	Start      int64
+	DNSStart   int64
+	DNSDone    int64
+	GetConn    int64
+	GotConn    int64
 	Reused     bool
-	TLSStart   time.Time
-	TLSStop    time.Time
-	ReqStart   time.Time
-	ReqDone    time.Time
-	ResStart   time.Time
-	ResDone    time.Time
+	TLSStart   int64
+	TLSStop    int64
+	ReqStart   int64
+	ReqDone    int64
+	ResStart   int64
+	ResDone    int64
 }
