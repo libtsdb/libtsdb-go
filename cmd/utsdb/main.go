@@ -8,6 +8,11 @@ import (
 	dlog "github.com/dyweb/gommon/log"
 	icli "github.com/at15/go.ice/ice/cli"
 	goicelog "github.com/at15/go.ice/ice/util/logutil"
+
+	_ "github.com/libtsdb/libtsdb-go/libtsdb/common/graphite"
+	_ "github.com/libtsdb/libtsdb-go/libtsdb/common/influxdb"
+	_ "github.com/libtsdb/libtsdb-go/libtsdb/common/kairosdb"
+	_ "github.com/libtsdb/libtsdb-go/libtsdb/common/xephonk"
 )
 
 const (
@@ -35,6 +40,7 @@ func main() {
 		icli.LogRegistry(log),
 	)
 	root := cli.Command()
+	root.AddCommand(listCmd)
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
