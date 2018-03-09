@@ -15,6 +15,7 @@ func TestClient_WriteIntPoint(t *testing.T) {
 
 	assert := asst.New(t)
 	c, err := New(*config.NewInfluxdbClientConfig())
+	c.EnableHttpTrace()
 	assert.Nil(err)
 	// TODO: util for point generator
 	c.WriteIntPoint(&pb.PointIntTagged{
@@ -26,6 +27,9 @@ func TestClient_WriteIntPoint(t *testing.T) {
 		},
 	})
 	err = c.Flush()
+	trace := c.Trace()
+	assert.Equal(204, trace.StatusCode)
+	//t.Logf("%v", trace)
 	assert.Nil(err)
 }
 

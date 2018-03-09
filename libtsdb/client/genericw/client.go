@@ -1,8 +1,11 @@
 package genericw
 
 import (
+	"crypto/tls"
 	"io/ioutil"
 	"net/http"
+	"net/http/httptrace"
+	"time"
 
 	"github.com/dyweb/gommon/errors"
 	"github.com/dyweb/gommon/requests"
@@ -14,6 +17,7 @@ import (
 )
 
 var _ libtsdb.WriteClient = (*Client)(nil)
+var _ libtsdb.TracedHttpClient = (*Client)(nil)
 var _ libtsdb.HttpClient = (*Client)(nil)
 
 // Client is a generic HTTP based client for write, it is not go routine safe because encoder
@@ -24,8 +28,17 @@ type Client struct {
 	baseReq *http.Request
 	meta    libtsdb.Meta
 
-	// stat collected by client after it started running
-	proto              string
+	// flag for using http trace
+	enableTrace bool
+
+	// stat collected by client
+
+	// single request
+	// TODO: compressed
+	proto string
+	trace libtsdb.HttpTrace
+
+	// accumulated counters
 	bytesSend          uint64
 	bytesSendSuccess   uint64
 	intPointWritten    uint64
@@ -39,6 +52,14 @@ func New(meta libtsdb.Meta, encoder common.Encoder, req *http.Request) *Client {
 		baseReq: req,
 		meta:    meta,
 	}
+}
+
+func (c *Client) EnableHttpTrace() {
+	c.enableTrace = true
+}
+
+func (c *Client) DisableHttpTrace() {
+	c.enableTrace = false
 }
 
 func (c *Client) Meta() libtsdb.Meta {
@@ -66,16 +87,61 @@ func (c *Client) Flush() error {
 	return c.send()
 }
 
+func (c *Client) Trace() libtsdb.HttpTrace {
+	return c.trace
+}
+
+func (c *Client) HttpStatusCode() int {
+	return c.trace.StatusCode
+}
+
 func (c *Client) send() error {
+	// TODO: real bytes send also include header etc, which we didn't take into account of bytes send
 	payloadSize := uint64(c.enc.Len())
 	c.bytesSend += payloadSize
 
-	// TODO: go support http client tracing, we can also use open tracing here ...
-	// TODO: real bytes send also include header etc, which we didn't take into account of bytes send
 	req := &http.Request{}
 	*req = *c.baseReq
 	b := c.enc.Bytes()
 	req.Body = bytesutil.ReadCloser(b)
+
+	// trace based on https://github.com/rakyll/hey/blob/master/requester/requester.go#L141
+	trace := &c.trace
+	trace.Start = time.Now().UnixNano()
+	if c.enableTrace {
+		tracer := &httptrace.ClientTrace{
+			DNSStart: func(info httptrace.DNSStartInfo) {
+				trace.DNSStart = time.Now().UnixNano()
+			},
+			DNSDone: func(info httptrace.DNSDoneInfo) {
+				trace.DNSDone = time.Now().UnixNano()
+			},
+			// TODO: can we just ignore ConnectStart and ConnectDone?
+			GetConn: func(hostPort string) {
+				trace.GetConn = time.Now().UnixNano()
+			},
+			GotConn: func(info httptrace.GotConnInfo) {
+				now := time.Now().UnixNano()
+				trace.Reused = info.Reused
+				trace.GotConn = now
+				trace.ReqStart = now
+			},
+			// TODO: only tls handshake when new connection is established?
+			TLSHandshakeStart: func() {
+				trace.TLSStart = time.Now().UnixNano()
+			},
+			TLSHandshakeDone: func(state tls.ConnectionState, e error) {
+				trace.TLSStop = time.Now().UnixNano()
+			},
+			WroteRequest: func(info httptrace.WroteRequestInfo) {
+				trace.ReqDone = time.Now().UnixNano()
+			},
+			GotFirstResponseByte: func() {
+				trace.ResStart = time.Now().UnixNano()
+			},
+		}
+		req = req.WithContext(httptrace.WithClientTrace(req.Context(), tracer))
+	}
 	res, err := c.h.Do(req)
 	c.enc.Reset()
 	if err != nil {
@@ -86,11 +152,13 @@ func (c *Client) send() error {
 	if err != nil {
 		return errors.Wrap(err, "can't read response body")
 	}
+	trace.StatusCode = res.StatusCode
+	trace.ResDone = time.Now().UnixNano()
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
-		log.Debugf("%d %s", res.StatusCode, string(b))
+		// FIXED: log due to https://github.com/xephonhq/xephon-b/issues/36
+		//log.Debugf("%d %s", res.StatusCode, string(b))
 		return errors.New(string(body))
 	}
-
 	c.proto = res.Proto
 	c.bytesSendSuccess += payloadSize
 	return nil

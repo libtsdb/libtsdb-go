@@ -14,8 +14,15 @@ type WriteClient interface {
 	Flush() error
 }
 
+type TracedHttpClient interface {
+	EnableHttpTrace()
+	DisableHttpTrace()
+	Trace() HttpTrace
+}
+
 type HttpClient interface {
 	SetHttpClient(client *http.Client)
+	HttpStatusCode() int
 }
 
 type HttpWriteClient interface {
