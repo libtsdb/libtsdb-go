@@ -64,7 +64,6 @@ func TestJsonEncoder_WriteSeriesIntTagged(t *testing.T) {
 	assert.Equal(`[{"name":"archive_file_tracked","datapoints":[[1359788100000,12],[1359788200000,13],[1359788300000,14]],"tags":{"host":"server1","data_center":"dc1"}}]`, string(enc.Bytes()))
 }
 
-
 func TestJsonEncoder_WriteSeriesDoubleTagged(t *testing.T) {
 	assert := asst.New(t)
 
@@ -82,6 +81,5 @@ func TestJsonEncoder_WriteSeriesDoubleTagged(t *testing.T) {
 	}
 	enc := NewJsonEncoder()
 	enc.WriteSeriesDoubleTagged(s)
-	t.Log(string(enc.Bytes()))
 	assert.Equal(`[{"name":"archive_file_tracked","datapoints":[[1359788100000,12.2],[1359788200000,13.3],[1359788300000,14.25]],"tags":{"host":"server1","data_center":"dc1"}}]`, string(enc.Bytes()))
 }

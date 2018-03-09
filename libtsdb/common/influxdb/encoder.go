@@ -68,3 +68,53 @@ func (e *Encoder) WritePointDoubleTagged(p *pb.PointDoubleTagged) {
 	e.Buf = strconv.AppendInt(e.Buf, p.Point.T, 10)
 	e.Buf = append(e.Buf, '\n')
 }
+
+func (e *Encoder) WriteSeriesIntTagged(p *pb.SeriesIntTagged) {
+	// NOTE: InfluxDB does not support ingest multiple points in one line
+	// first write the key, measurement + tags + default field
+	var header []byte
+	header = append(header, p.Name...)
+	header = append(header, ',')
+	for _, tag := range p.Tags {
+		header = append(header, tag.K...)
+		header = append(header, '=')
+		header = append(header, tag.V...)
+		header = append(header, ',')
+	}
+	header[len(header)-1] = ' '
+	header = append(header, e.DefaultField...)
+	header = append(header, '=')
+	// then duplicate the header in every line
+	for i := range p.Points {
+		e.Buf = append(e.Buf, header...)
+		e.Buf = strconv.AppendInt(e.Buf, p.Points[i].V, 10)
+		e.Buf = append(e.Buf, ' ')
+		e.Buf = strconv.AppendInt(e.Buf, p.Points[i].T, 10)
+		e.Buf = append(e.Buf, '\n')
+	}
+}
+
+func (e *Encoder) WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged) {
+	// NOTE: InfluxDB does not support ingest multiple points in one line
+	// first write the key, measurement + tags + default field
+	var header []byte
+	header = append(header, p.Name...)
+	header = append(header, ',')
+	for _, tag := range p.Tags {
+		header = append(header, tag.K...)
+		header = append(header, '=')
+		header = append(header, tag.V...)
+		header = append(header, ',')
+	}
+	header[len(header)-1] = ' '
+	header = append(header, e.DefaultField...)
+	header = append(header, '=')
+	// then duplicate the header in every line
+	for i := range p.Points {
+		e.Buf = append(e.Buf, header...)
+		e.Buf = strconv.AppendFloat(e.Buf, p.Points[i].V, 'f', -1, 64)
+		e.Buf = append(e.Buf, ' ')
+		e.Buf = strconv.AppendInt(e.Buf, p.Points[i].T, 10)
+		e.Buf = append(e.Buf, '\n')
+	}
+}

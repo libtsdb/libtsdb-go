@@ -12,4 +12,6 @@ type Encoder interface {
 	Reset()
 	WritePointIntTagged(p *pb.PointIntTagged)
 	WritePointDoubleTagged(p *pb.PointDoubleTagged)
+	WriteSeriesIntTagged(p *pb.SeriesIntTagged)
+	WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged)
 }
