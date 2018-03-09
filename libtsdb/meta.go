@@ -17,12 +17,16 @@ var (
 
 // Meta describes a database's behavior
 type Meta struct {
-	Name          string
-	Repo          string
-	TimePrecision time.Duration
-	SupportTag    bool
-	SupportInt    bool
-	SupportDouble bool
+	Name               string
+	Repo               string
+	TimePrecision      time.Duration
+	SupportTag         bool
+	SupportInt         bool
+	SupportDouble      bool
+	// write multiple series in one payload
+	SupportBatchSeries bool
+	// merge points of same series into more compact format
+	SupportBatchPoints bool
 }
 
 func RegisterMeta(db string, meta Meta) {

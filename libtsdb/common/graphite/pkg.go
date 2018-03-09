@@ -11,11 +11,13 @@ const (
 )
 
 var meta = libtsdb.Meta{
-	Name:          name,
-	TimePrecision: precision,
-	SupportTag:    true,
-	SupportInt:    false,
-	SupportDouble: true,
+	Name:               name,
+	TimePrecision:      precision,
+	SupportTag:         true,
+	SupportInt:         false,
+	SupportDouble:      true,
+	SupportBatchSeries: true,
+	SupportBatchPoints: false,
 }
 
 func Meta() libtsdb.Meta {
