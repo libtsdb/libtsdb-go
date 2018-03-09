@@ -11,10 +11,11 @@ import (
 
 // TODO: add flag to toggle test base on environ variable ... maybe testutil to gommon, travis etc.
 func TestClient_WriteIntPoint(t *testing.T) {
-	t.Skip("requires influxdb running")
+	//t.Skip("requires influxdb running")
 
 	assert := asst.New(t)
 	c, err := New(*config.NewInfluxdbClientConfig())
+	c.EnableHttpTrace()
 	assert.Nil(err)
 	// TODO: util for point generator
 	c.WriteIntPoint(&pb.PointIntTagged{
