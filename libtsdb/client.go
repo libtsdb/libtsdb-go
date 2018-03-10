@@ -12,6 +12,7 @@ type TSDBClient interface {
 }
 
 type WriteClient interface {
+	TSDBClient
 	WriteIntPoint(*pb.PointIntTagged)
 	WriteDoublePoint(*pb.PointDoubleTagged)
 	WriteSeriesIntTagged(p *pb.SeriesIntTagged)
@@ -37,5 +38,6 @@ type HttpWriteClient interface {
 
 // TODO: figure out the interface for read request...
 type ReadClient interface {
+	TSDBClient
 	CreateDatabase(db string) error
 }
