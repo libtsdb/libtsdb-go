@@ -43,3 +43,43 @@ func TestJsonEncoder_WritePointDoubleTagged(t *testing.T) {
 	enc.WritePointDoubleTagged(p)
 	assert.Equal(`[{"name":"cpu_idle","timestamp":1359786400000,"value":23.2,"tags":{"host":"server2","region":"en-us"}}]`, string(enc.Bytes()))
 }
+
+func TestJsonEncoder_WriteSeriesIntTagged(t *testing.T) {
+	assert := asst.New(t)
+
+	s := &pb.SeriesIntTagged{
+		Name: "archive_file_tracked",
+		Tags: []pb.Tag{
+			{K: "host", V: "server1"},
+			{K: "data_center", V: "dc1"},
+		},
+		Points: []pb.PointInt{
+			{T: 1359788100000, V: 12},
+			{T: 1359788200000, V: 13},
+			{T: 1359788300000, V: 14},
+		},
+	}
+	enc := NewJsonEncoder()
+	enc.WriteSeriesIntTagged(s)
+	assert.Equal(`[{"name":"archive_file_tracked","datapoints":[[1359788100000,12],[1359788200000,13],[1359788300000,14]],"tags":{"host":"server1","data_center":"dc1"}}]`, string(enc.Bytes()))
+}
+
+func TestJsonEncoder_WriteSeriesDoubleTagged(t *testing.T) {
+	assert := asst.New(t)
+
+	s := &pb.SeriesDoubleTagged{
+		Name: "archive_file_tracked",
+		Tags: []pb.Tag{
+			{K: "host", V: "server1"},
+			{K: "data_center", V: "dc1"},
+		},
+		Points: []pb.PointDouble{
+			{T: 1359788100000, V: 12.2},
+			{T: 1359788200000, V: 13.3},
+			{T: 1359788300000, V: 14.25},
+		},
+	}
+	enc := NewJsonEncoder()
+	enc.WriteSeriesDoubleTagged(s)
+	assert.Equal(`[{"name":"archive_file_tracked","datapoints":[[1359788100000,12.2],[1359788200000,13.3],[1359788300000,14.25]],"tags":{"host":"server1","data_center":"dc1"}}]`, string(enc.Bytes()))
+}

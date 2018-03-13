@@ -8,9 +8,9 @@ Clients and Server implementation of multiple TSDB protocols in Go
 | ------------ |:------:| :-----:| :----------: | :--: |
 | InfluxDB     | HTTP/Line | N | N | N |
 | Graphite     | TCP/Line | N | N | N |
-| KairosDB | HTTP/JSON (TODO) | N | N | N |
-| OpenTSDB | HTTP/JSON (TODO) | N | N | N |
-| Heroic | HTTP/JSON (TODO) | N | N | N |
+| KairosDB | HTTP/JSON | N | N | N |
+| OpenTSDB | HTTP/JSON (NA) | N | N | N |
+| Heroic | HTTP/JSON (NA) | N | N | N |
 | Xephon-K | HTTP/JSON (TODO) GRPC (TODO) | N | N | N |
 
 ## Motivation

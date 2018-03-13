@@ -1,6 +1,5 @@
 package libtsdb
 
-// TODO: it might be more efficient to use unix timestamp
 type HttpTrace struct {
 	StatusCode int
 	Start      int64

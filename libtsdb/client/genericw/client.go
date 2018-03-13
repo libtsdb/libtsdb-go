@@ -16,12 +16,13 @@ import (
 	"github.com/libtsdb/libtsdb-go/libtsdb/util/bytesutil"
 )
 
+var _ libtsdb.TSDBClient = (*Client)(nil)
 var _ libtsdb.WriteClient = (*Client)(nil)
 var _ libtsdb.TracedHttpClient = (*Client)(nil)
 var _ libtsdb.HttpClient = (*Client)(nil)
 
 // Client is a generic HTTP based client for write, it is not go routine safe because encoder
-// TODO: allow insecure, because we have https server with self signed certs
+// TODO: allow insecure, because we have https server with self signed certs, and HTTP/2 can only be used with https
 type Client struct {
 	enc     common.Encoder
 	h       *http.Client
@@ -80,6 +81,16 @@ func (c *Client) WriteIntPoint(p *pb.PointIntTagged) {
 func (c *Client) WriteDoublePoint(p *pb.PointDoubleTagged) {
 	c.doublePointWritten += 1
 	c.enc.WritePointDoubleTagged(p)
+}
+
+func (c *Client) WriteSeriesIntTagged(p *pb.SeriesIntTagged) {
+	c.intPointWritten += uint64(len(p.Points))
+	c.enc.WriteSeriesIntTagged(p)
+}
+
+func (c *Client) WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged) {
+	c.doublePointWritten += uint64(len(p.Points))
+	c.enc.WriteSeriesDoubleTagged(p)
 }
 
 // Flush sends encoded data to server and reset encoder

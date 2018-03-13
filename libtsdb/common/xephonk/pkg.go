@@ -1,23 +1,24 @@
-package graphite
+package xephonk
 
 import (
-	"github.com/libtsdb/libtsdb-go/libtsdb"
 	"time"
+
+	"github.com/libtsdb/libtsdb-go/libtsdb"
 )
 
 const (
-	name      = "graphite"
-	precision = time.Second
+	name      = "xephonk"
+	precision = time.Nanosecond
 )
 
 var meta = libtsdb.Meta{
 	Name:               name,
 	TimePrecision:      precision,
 	SupportTag:         true,
-	SupportInt:         false,
+	SupportInt:         true,
 	SupportDouble:      true,
 	SupportBatchSeries: true,
-	SupportBatchPoints: false,
+	SupportBatchPoints: true,
 }
 
 func Meta() libtsdb.Meta {

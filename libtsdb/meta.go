@@ -23,6 +23,10 @@ type Meta struct {
 	SupportTag    bool
 	SupportInt    bool
 	SupportDouble bool
+	// write multiple series in one payload
+	SupportBatchSeries bool
+	// merge points of same series into more compact format
+	SupportBatchPoints bool
 }
 
 func RegisterMeta(db string, meta Meta) {

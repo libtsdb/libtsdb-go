@@ -84,3 +84,53 @@ func (e *JsonEncoder) WritePointDoubleTagged(p *pb.PointDoubleTagged) {
 	e.Buf[len(e.Buf)-1] = '}'
 	e.Buf = append(e.Buf, `},`...)
 }
+
+func (e *JsonEncoder) WriteSeriesIntTagged(p *pb.SeriesIntTagged) {
+	e.Buf = append(e.Buf, `{"name":"`...)
+	e.Buf = append(e.Buf, p.Name...)
+	e.Buf = append(e.Buf, `","datapoints":[`...)
+	// TODO: use i or tmp var? need benchmark to see which is faster, this also applies to tags
+	for i := range p.Points {
+		e.Buf = append(e.Buf, '[')
+		e.Buf = strconv.AppendInt(e.Buf, p.Points[i].T, 10)
+		e.Buf = append(e.Buf, ',')
+		e.Buf = strconv.AppendInt(e.Buf, p.Points[i].V, 10)
+		e.Buf = append(e.Buf, `],`...)
+	}
+	e.Buf[len(e.Buf)-1] = ']'
+	e.Buf = append(e.Buf, `,"tags":{`...)
+	for _, tag := range p.Tags {
+		e.Buf = append(e.Buf, '"')
+		e.Buf = append(e.Buf, tag.K...)
+		e.Buf = append(e.Buf, `":"`...)
+		e.Buf = append(e.Buf, tag.V...)
+		e.Buf = append(e.Buf, `",`...)
+	}
+	e.Buf[len(e.Buf)-1] = '}'
+	e.Buf = append(e.Buf, `},`...)
+}
+
+func (e *JsonEncoder) WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged) {
+	e.Buf = append(e.Buf, `{"name":"`...)
+	e.Buf = append(e.Buf, p.Name...)
+	e.Buf = append(e.Buf, `","datapoints":[`...)
+	// TODO: use i or tmp var? need benchmark to see which is faster, this also applies to tags
+	for i := range p.Points {
+		e.Buf = append(e.Buf, '[')
+		e.Buf = strconv.AppendInt(e.Buf, p.Points[i].T, 10)
+		e.Buf = append(e.Buf, ',')
+		e.Buf = strconv.AppendFloat(e.Buf, p.Points[i].V, 'f', -1, 64)
+		e.Buf = append(e.Buf, `],`...)
+	}
+	e.Buf[len(e.Buf)-1] = ']'
+	e.Buf = append(e.Buf, `,"tags":{`...)
+	for _, tag := range p.Tags {
+		e.Buf = append(e.Buf, '"')
+		e.Buf = append(e.Buf, tag.K...)
+		e.Buf = append(e.Buf, `":"`...)
+		e.Buf = append(e.Buf, tag.V...)
+		e.Buf = append(e.Buf, `",`...)
+	}
+	e.Buf[len(e.Buf)-1] = '}'
+	e.Buf = append(e.Buf, `},`...)
+}

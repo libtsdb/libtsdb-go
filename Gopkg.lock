@@ -8,7 +8,7 @@
     "ice/cli",
     "ice/util/logutil"
   ]
-  revision = "c8561aa9ce40b5223941dbc8e87552a574f18694"
+  revision = "1eae51f02b6b9b0e8adf781c6dc570458c18db77"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -34,7 +34,7 @@
     "util/runtimeutil",
     "util/testutil"
   ]
-  revision = "a9768ace27e47bd6f1b2afb93fdd73350fb2ab95"
+  revision = "9205d0bbac41b6bc0d3430d077595e178bb4374c"
 
 [[projects]]
   name = "github.com/gogo/protobuf"
@@ -44,6 +44,18 @@
     "protoc-gen-gogo/descriptor"
   ]
   revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
+  version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/golang/protobuf"
+  packages = [
+    "proto",
+    "ptypes",
+    "ptypes/any",
+    "ptypes/duration",
+    "ptypes/timestamp"
+  ]
+  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
   version = "v1.0.0"
 
 [[projects]]
@@ -59,8 +71,8 @@
     "models",
     "pkg/escape"
   ]
-  revision = "60d27e6995558f38a39e90b35a92cbac080310a3"
-  version = "v1.4.3"
+  revision = "6ac835404e7e64ea7299a6eebcce1ab1ef15fe3c"
+  version = "v1.5.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -88,9 +100,81 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/xephonhq/xephon-k"
+  packages = ["xk/transport/grpc"]
+  revision = "cf29c8aa2e809074e16f3864802d028816967815"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/net"
-  packages = ["proxy"]
-  revision = "22ae77b79946ea320088417e4d50825671d82d57"
+  packages = [
+    "context",
+    "http2",
+    "http2/hpack",
+    "idna",
+    "internal/timeseries",
+    "lex/httplex",
+    "proxy",
+    "trace"
+  ]
+  revision = "d0aafc73d5cdc42264b0af071c261abac580695e"
+
+[[projects]]
+  name = "golang.org/x/text"
+  packages = [
+    "collate",
+    "collate/build",
+    "internal/colltab",
+    "internal/gen",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable"
+  ]
+  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
+  version = "v0.3.0"
+
+[[projects]]
+  branch = "master"
+  name = "google.golang.org/genproto"
+  packages = ["googleapis/rpc/status"]
+  revision = "df60624c1e9b9d2973e889c7a1cff73155da81c4"
+
+[[projects]]
+  name = "google.golang.org/grpc"
+  packages = [
+    ".",
+    "balancer",
+    "balancer/base",
+    "balancer/roundrobin",
+    "codes",
+    "connectivity",
+    "credentials",
+    "encoding",
+    "encoding/proto",
+    "grpclb/grpc_lb_v1/messages",
+    "grpclog",
+    "internal",
+    "keepalive",
+    "metadata",
+    "naming",
+    "peer",
+    "resolver",
+    "resolver/dns",
+    "resolver/passthrough",
+    "stats",
+    "status",
+    "tap",
+    "transport"
+  ]
+  revision = "8e4536a86ab602859c20df5ebfd0bd4228d08655"
+  version = "v1.10.0"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -101,6 +185,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "930f16bc5cffff1e332103df225a11d797d46d5144a4e3dfdc33b1aadc02edd0"
+  inputs-digest = "c83cc8e6acbbabe02471bee92515921342eafaf4ae7e3ba6832975e62f3d514d"
   solver-name = "gps-cdcl"
   solver-version = 1
