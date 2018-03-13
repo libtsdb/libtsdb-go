@@ -20,6 +20,7 @@ var _ libtsdb.WriteClient = (*Client)(nil)
 type Client struct {
 	cfg    config.XephonKClientConfig
 	client rpc.XephonkClient
+	conn   *grpc.ClientConn
 
 	pointsInt    []pb.PointIntTagged
 	pointsDouble []pb.PointDoubleTagged
@@ -40,11 +41,19 @@ func New(cfg config.XephonKClientConfig) (*Client, error) {
 	return &Client{
 		cfg:    cfg,
 		client: client,
+		conn:   conn,
 	}, nil
 }
 
 func (c *Client) Meta() libtsdb.Meta {
 	return xephonk.Meta()
+}
+
+func (c *Client) Close() error {
+	if err := c.conn.Close(); err != nil {
+		return errors.Wrap(err, "can't close grpc client connection")
+	}
+	return nil
 }
 
 func (c *Client) WriteIntPoint(p *pb.PointIntTagged) {

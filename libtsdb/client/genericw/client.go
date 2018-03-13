@@ -67,6 +67,11 @@ func (c *Client) Meta() libtsdb.Meta {
 	return c.meta
 }
 
+func (c *Client) Close() error {
+	// http client doesn't not have methods for closing it ...
+	return nil
+}
+
 func (c *Client) SetHttpClient(h *http.Client) {
 	c.h = h
 }

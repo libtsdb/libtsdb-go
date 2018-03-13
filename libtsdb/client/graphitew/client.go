@@ -57,6 +57,13 @@ func (c *Client) Flush() error {
 	return c.send()
 }
 
+func (c *Client) Close() error {
+	if err := c.conn.Close(); err != nil {
+		return errors.Wrap(err, "error closing tcp connection")
+	}
+	return nil
+}
+
 func (c *Client) send() error {
 	_, err := c.conn.Write(c.enc.Bytes())
 	c.enc.Reset()
