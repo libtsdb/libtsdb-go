@@ -8,6 +8,10 @@ FLAGS = -X main.version=$(VERSION) -X main.commit=$(BUILD_COMMIT) -X main.buildT
 install:
 	go install -ldflags "$(FLAGS)" ./cmd/utsdb
 
+.PHONY: clean
+	go clean -cache
+	go clean -testcache
+
 .PHONY: test
 test:
 	go test -v -cover ./libtsdb/...
