@@ -1,24 +1,25 @@
 package libtsdbpb
 
-// sizer is used to output raw size of series in bit
+// sizer is used to output raw size of series in byte
 //
-// string are all treated as ASCII and size of it is 8 * length
-const characterSize = 8
+// string are all treated as ASCII and size of it is 1 byte * length
+const characterSize = 1
+const pointSize = 16 // int64 + float64|int64
 
 func (m *Tag) RawSize() int {
 	return characterSize * (len(m.K) + len(m.V))
 }
 
 func (*PointInt) RawSize() int {
-	return 64 + 64
+	return pointSize
 }
 
 func (*PointDouble) RawSize() int {
-	return 64 + 64
+	return pointSize
 }
 
 func (m *PointIntTagged) RawSize() int {
-	s := characterSize*len(m.Name) + m.Point.RawSize()
+	s := characterSize*len(m.Name) + pointSize
 	for i := 0; i < len(m.Tags); i++ {
 		s += m.Tags[i].RawSize()
 	}
@@ -26,7 +27,7 @@ func (m *PointIntTagged) RawSize() int {
 }
 
 func (m *PointDoubleTagged) RawSize() int {
-	s := characterSize*len(m.Name) + m.Point.RawSize()
+	s := characterSize*len(m.Name) + pointSize
 	for i := 0; i < len(m.Tags); i++ {
 		s += m.Tags[i].RawSize()
 	}
@@ -42,7 +43,7 @@ func (m *EmptySeries) RawSize() int {
 }
 
 func (m *SeriesIntTagged) RawSize() int {
-	s := characterSize*len(m.Name) + (64+64)*len(m.Points)
+	s := characterSize*len(m.Name) + pointSize*len(m.Points)
 	for i := 0; i < len(m.Tags); i++ {
 		s += m.Tags[i].RawSize()
 	}
@@ -50,7 +51,7 @@ func (m *SeriesIntTagged) RawSize() int {
 }
 
 func (m *SeriesDoubleTagged) RawSize() int {
-	s := characterSize*len(m.Name) + (64+64)*len(m.Points)
+	s := characterSize*len(m.Name) + pointSize*len(m.Points)
 	for i := 0; i < len(m.Tags); i++ {
 		s += m.Tags[i].RawSize()
 	}
@@ -58,7 +59,7 @@ func (m *SeriesDoubleTagged) RawSize() int {
 }
 
 func (m *SeriesIntTaggedColumnar) RawSize() int {
-	s := characterSize*len(m.Name) + (64+64)*len(m.Times)
+	s := characterSize*len(m.Name) + pointSize*len(m.Times)
 	for i := 0; i < len(m.Tags); i++ {
 		s += m.Tags[i].RawSize()
 	}
@@ -66,7 +67,7 @@ func (m *SeriesIntTaggedColumnar) RawSize() int {
 }
 
 func (m *SeriesDoubleTaggedColumnar) RawSize() int {
-	s := characterSize*len(m.Name) + (64+64)*len(m.Times)
+	s := characterSize*len(m.Name) + pointSize*len(m.Times)
 	for i := 0; i < len(m.Tags); i++ {
 		s += m.Tags[i].RawSize()
 	}
