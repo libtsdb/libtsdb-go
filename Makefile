@@ -9,6 +9,7 @@ install:
 	go install -ldflags "$(FLAGS)" ./cmd/utsdb
 
 .PHONY: clean
+clean:
 	go clean -cache
 	go clean -testcache
 
