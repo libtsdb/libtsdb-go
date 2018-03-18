@@ -8,10 +8,6 @@ import (
 	"github.com/libtsdb/libtsdb-go/libtsdb/util/bytesutil"
 )
 
-type TelnetEncoder struct {
-	bytesutil.Buffer
-}
-
 var _ common.Encoder = (*JsonEncoder)(nil)
 
 // JsonEncoder support mix of single point and series
