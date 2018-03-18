@@ -26,21 +26,25 @@ Clients and Server implementation of multiple TSDB protocols in Go
 ## Metrics
 
 To be used with benchmark like [xephon-b](https://github.com/xephonhq/xephon-b), 
-the client (both http and tcp) return struct that fits the [interface](https://github.com/xephonhq/xephon-b/tree/master/pkg/metrics)
-to avoid a wrapper around them.
-http client use `net/http/httptrace` and give more detailed data.
+the client (both http and tcp) return struct that meet `libtsdb.Trace` interface
+to avoid user add extra wrapper to get latency etc.
+http client uses `net/http/httptrace` and can give more detailed data.
 
 For a single request
 
 - request start time
-- latency 
+- request end time (for http, this include reading response)
 - series, points written
-- raw data size
-- actual payload size
+- raw size (data + meta)
+- raw meta size (series name, tags)
+- payload size
 
 Accumulated results
 
-- [ ] TODO:
+- points written
+- raw size (data + meta)
+- raw meta size (series name, tags)
+- payload size
 
 ## Roadmap
 

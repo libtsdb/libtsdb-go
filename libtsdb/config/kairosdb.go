@@ -4,6 +4,7 @@ import "time"
 
 type KairosdbClientConfig struct {
 	Addr       string        `yaml:"addr"`
+	Telnet     bool          `yaml:"telnet"`
 	TelnetAddr string        `yaml:"telnetAddr"`
 	Timeout    time.Duration `yaml:"timeout"`
 }
