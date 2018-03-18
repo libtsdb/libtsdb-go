@@ -1,5 +1,7 @@
 package libtsdb
 
+// TODO: tcp client
+
 type HttpTrace struct {
 	// from response
 	StatusCode   int
