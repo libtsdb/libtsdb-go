@@ -21,12 +21,6 @@ type WriteClient interface {
 	Flush() error
 }
 
-type TracedHttpClient interface {
-	EnableHttpTrace()
-	DisableHttpTrace()
-	Trace() HttpTrace
-}
-
 type HttpClient interface {
 	SetHttpClient(client *http.Client)
 	AllowInsecure()
@@ -36,6 +30,22 @@ type HttpClient interface {
 type HttpWriteClient interface {
 	WriteClient
 	HttpClient
+}
+
+type TracedClient interface {
+	Trace() Trace
+}
+
+type TracedHttpClient interface {
+	TracedClient
+	EnableHttpTrace()
+	DisableHttpTrace()
+	HttpTrace() HttpTrace
+}
+
+type TracedTcpClient interface {
+	TracedClient
+	TcpTrace() TcpTrace
 }
 
 // TODO: figure out the interface for read request...

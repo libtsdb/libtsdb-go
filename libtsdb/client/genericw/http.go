@@ -22,7 +22,6 @@ var _ libtsdb.TracedHttpClient = (*HttpClient)(nil)
 var _ libtsdb.HttpClient = (*HttpClient)(nil)
 
 // HttpClient is a generic HTTP based client for write, it is not go routine safe because encoder
-// TODO: allow insecure, because we have https server with self signed certs, and HTTP/2 can only be used with https
 type HttpClient struct {
 	// tsdb
 	enc  common.Encoder
@@ -32,20 +31,22 @@ type HttpClient struct {
 	h           *http.Client
 	insecure    bool
 	baseReq     *http.Request
-	enableTrace bool // use net/http/httprace
+	enableTrace bool // use net/http/httptrace
 
-	// stat collected by client
+	// stat for single request
+	// TODO: deal with gzip
+	proto     string
+	trace     libtsdb.HttpTrace
+	prevTrace libtsdb.HttpTrace
 
-	// single request
-	// TODO: compressed
-	proto string
-	trace libtsdb.HttpTrace
-
-	// accumulated counters TODO: encoder should support this
-	bytesSend          uint64
-	bytesSendSuccess   uint64
-	intPointWritten    uint64
-	doublePointWritten uint64
+	// stat for accumulated counters
+	// NOTE: we maintain counter in generic clients so encoder don't need to worry about it
+	totalPayloadSize        int
+	totalRawSize            int
+	totalRawMetaSize        int
+	totalIntPointWritten    int
+	totalDoublePointWritten int
+	// TODO: can't count unique series written unless we hash series
 }
 
 func NewHttp(meta libtsdb.Meta, encoder common.Encoder, req *http.Request) *HttpClient {
@@ -97,23 +98,39 @@ func (c *HttpClient) SetHttpClient(h *http.Client) {
 
 // WriteIntPoint only writes to encoder, but does not flush it
 func (c *HttpClient) WriteIntPoint(p *pb.PointIntTagged) {
-	c.intPointWritten += 1
+	c.totalIntPointWritten += 1
+	c.trace.RawSize += p.RawSize()
+	c.trace.RawMetaSize += p.RawMetaSize()
+	c.totalRawSize += p.RawSize()
+	c.totalRawMetaSize += p.RawMetaSize()
 	c.enc.WritePointIntTagged(p)
 }
 
 // WriteDoublePoint only writes to encoder, but does not flush it
 func (c *HttpClient) WriteDoublePoint(p *pb.PointDoubleTagged) {
-	c.doublePointWritten += 1
+	c.totalDoublePointWritten += 1
+	c.trace.RawSize += p.RawSize()
+	c.trace.RawMetaSize += p.RawMetaSize()
+	c.totalRawSize += p.RawSize()
+	c.totalRawMetaSize += p.RawMetaSize()
 	c.enc.WritePointDoubleTagged(p)
 }
 
 func (c *HttpClient) WriteSeriesIntTagged(p *pb.SeriesIntTagged) {
-	c.intPointWritten += uint64(len(p.Points))
+	c.totalIntPointWritten += len(p.Points)
+	c.trace.RawSize += p.RawSize()
+	c.trace.RawMetaSize += p.RawMetaSize()
+	c.totalRawSize += p.RawSize()
+	c.totalRawMetaSize += p.RawMetaSize()
 	c.enc.WriteSeriesIntTagged(p)
 }
 
 func (c *HttpClient) WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged) {
-	c.doublePointWritten += uint64(len(p.Points))
+	c.totalDoublePointWritten += len(p.Points)
+	c.trace.RawSize += p.RawSize()
+	c.trace.RawMetaSize += p.RawMetaSize()
+	c.totalRawSize += p.RawSize()
+	c.totalRawMetaSize += p.RawMetaSize()
 	c.enc.WriteSeriesDoubleTagged(p)
 }
 
@@ -122,18 +139,24 @@ func (c *HttpClient) Flush() error {
 	return c.send()
 }
 
-func (c *HttpClient) Trace() libtsdb.HttpTrace {
-	return c.trace
+func (c *HttpClient) Trace() libtsdb.Trace {
+	// make a copy, otherwise when the trace is used, the pointer might be pointing to a changed trace
+	cp := c.prevTrace
+	return &cp
+}
+
+func (c *HttpClient) HttpTrace() libtsdb.HttpTrace {
+	return c.prevTrace
 }
 
 func (c *HttpClient) HttpStatusCode() int {
-	return c.trace.StatusCode
+	return c.prevTrace.StatusCode
 }
 
 func (c *HttpClient) send() error {
-	// TODO: real bytes send also include header etc, which we didn't take into account of bytes send
-	payloadSize := uint64(c.enc.Len())
-	c.bytesSend += payloadSize
+	// TODO: real bytes send also include http header etc, which we didn't take into account of bytes send
+	c.totalPayloadSize += c.enc.Len()
+	c.trace.PayloadSize = c.enc.Len()
 
 	req := &http.Request{}
 	*req = *c.baseReq
@@ -142,7 +165,6 @@ func (c *HttpClient) send() error {
 
 	// trace based on https://github.com/rakyll/hey/blob/master/requester/requester.go#L141
 	trace := &c.trace
-	trace.Start = time.Now().UnixNano()
 	if c.enableTrace {
 		tracer := &httptrace.ClientTrace{
 			DNSStart: func(info httptrace.DNSStartInfo) {
@@ -151,7 +173,7 @@ func (c *HttpClient) send() error {
 			DNSDone: func(info httptrace.DNSDoneInfo) {
 				trace.DNSDone = time.Now().UnixNano()
 			},
-			// TODO: can we just ignore ConnectStart and ConnectDone?
+			// TODO: is it ok to ignore ConnectStart and ConnectDone?
 			GetConn: func(hostPort string) {
 				trace.GetConn = time.Now().UnixNano()
 			},
@@ -177,24 +199,37 @@ func (c *HttpClient) send() error {
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), tracer))
 	}
+
+	trace.Start = time.Now().UnixNano()
 	res, err := c.h.Do(req)
+	trace.End = time.Now().UnixNano()
+	// reset
 	c.enc.Reset()
+	c.prevTrace = c.trace
+	c.trace.Reset()
 	if err != nil {
+		c.prevTrace.Error = true
+		c.prevTrace.ErrorMessage = err.Error()
 		return errors.Wrap(err, "error send http request")
 	}
+	// read response
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
+		c.prevTrace.Error = true
+		c.prevTrace.ErrorMessage = err.Error()
 		return errors.Wrap(err, "can't read response body")
 	}
-	trace.StatusCode = res.StatusCode
-	trace.ResDone = time.Now().UnixNano()
+	c.prevTrace.StatusCode = res.StatusCode
+	c.prevTrace.ResDone = time.Now().UnixNano()
+	c.prevTrace.End = c.prevTrace.ResDone // TODO: might need two types of end time, on for finished write, one for finished read
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
 		// FIXED: log due to https://github.com/xephonhq/xephon-b/issues/36
 		//log.Debugf("%d %s", res.StatusCode, string(b))
+		c.prevTrace.Error = true
+		c.prevTrace.ErrorMessage = string(body)
 		return errors.New(string(body))
 	}
 	c.proto = res.Proto
-	c.bytesSendSuccess += payloadSize
 	return nil
 }
