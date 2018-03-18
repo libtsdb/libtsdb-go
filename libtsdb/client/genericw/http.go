@@ -16,21 +16,23 @@ import (
 	"github.com/libtsdb/libtsdb-go/libtsdb/util/bytesutil"
 )
 
-var _ libtsdb.TSDBClient = (*Client)(nil)
-var _ libtsdb.WriteClient = (*Client)(nil)
-var _ libtsdb.TracedHttpClient = (*Client)(nil)
-var _ libtsdb.HttpClient = (*Client)(nil)
+var _ libtsdb.TSDBClient = (*HttpClient)(nil)
+var _ libtsdb.WriteClient = (*HttpClient)(nil)
+var _ libtsdb.TracedHttpClient = (*HttpClient)(nil)
+var _ libtsdb.HttpClient = (*HttpClient)(nil)
 
-// Client is a generic HTTP based client for write, it is not go routine safe because encoder
+// HttpClient is a generic HTTP based client for write, it is not go routine safe because encoder
 // TODO: allow insecure, because we have https server with self signed certs, and HTTP/2 can only be used with https
-type Client struct {
-	enc     common.Encoder
-	h       *http.Client
-	baseReq *http.Request
-	meta    libtsdb.Meta
+type HttpClient struct {
+	// tsdb
+	enc  common.Encoder
+	meta libtsdb.Meta
 
-	// flag for using http trace
-	enableTrace bool
+	// http
+	h           *http.Client
+	insecure    bool
+	baseReq     *http.Request
+	enableTrace bool // use net/http/httprace
 
 	// stat collected by client
 
@@ -39,15 +41,15 @@ type Client struct {
 	proto string
 	trace libtsdb.HttpTrace
 
-	// accumulated counters
+	// accumulated counters TODO: encoder should support this
 	bytesSend          uint64
 	bytesSendSuccess   uint64
 	intPointWritten    uint64
 	doublePointWritten uint64
 }
 
-func New(meta libtsdb.Meta, encoder common.Encoder, req *http.Request) *Client {
-	return &Client{
+func NewHttp(meta libtsdb.Meta, encoder common.Encoder, req *http.Request) *HttpClient {
+	return &HttpClient{
 		enc:     encoder,
 		h:       requests.NewDefaultClient(),
 		baseReq: req,
@@ -55,63 +57,80 @@ func New(meta libtsdb.Meta, encoder common.Encoder, req *http.Request) *Client {
 	}
 }
 
-func (c *Client) EnableHttpTrace() {
+func (c *HttpClient) EnableHttpTrace() {
 	c.enableTrace = true
 }
 
-func (c *Client) DisableHttpTrace() {
+func (c *HttpClient) DisableHttpTrace() {
 	c.enableTrace = false
 }
 
-func (c *Client) Meta() libtsdb.Meta {
+func (c *HttpClient) AllowInsecure() {
+	if c.h == nil {
+		return
+	}
+	c.insecure = true
+	if t, ok := c.h.Transport.(*http.Transport); ok {
+		t.TLSClientConfig.InsecureSkipVerify = true
+	}
+}
+
+func (c *HttpClient) Meta() libtsdb.Meta {
 	return c.meta
 }
 
-func (c *Client) Close() error {
+func (c *HttpClient) Close() error {
 	// http client doesn't not have methods for closing it ...
 	return nil
 }
 
-func (c *Client) SetHttpClient(h *http.Client) {
+func (c *HttpClient) SetHttpClient(h *http.Client) {
 	c.h = h
+	// TODO: maybe we should not set insecure because the user can set it by themselve since they are already
+	// setting the http client directly ...
+	if c.insecure {
+		if t, ok := c.h.Transport.(*http.Transport); ok {
+			t.TLSClientConfig.InsecureSkipVerify = true
+		}
+	}
 }
 
 // WriteIntPoint only writes to encoder, but does not flush it
-func (c *Client) WriteIntPoint(p *pb.PointIntTagged) {
+func (c *HttpClient) WriteIntPoint(p *pb.PointIntTagged) {
 	c.intPointWritten += 1
 	c.enc.WritePointIntTagged(p)
 }
 
 // WriteDoublePoint only writes to encoder, but does not flush it
-func (c *Client) WriteDoublePoint(p *pb.PointDoubleTagged) {
+func (c *HttpClient) WriteDoublePoint(p *pb.PointDoubleTagged) {
 	c.doublePointWritten += 1
 	c.enc.WritePointDoubleTagged(p)
 }
 
-func (c *Client) WriteSeriesIntTagged(p *pb.SeriesIntTagged) {
+func (c *HttpClient) WriteSeriesIntTagged(p *pb.SeriesIntTagged) {
 	c.intPointWritten += uint64(len(p.Points))
 	c.enc.WriteSeriesIntTagged(p)
 }
 
-func (c *Client) WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged) {
+func (c *HttpClient) WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged) {
 	c.doublePointWritten += uint64(len(p.Points))
 	c.enc.WriteSeriesDoubleTagged(p)
 }
 
 // Flush sends encoded data to server and reset encoder
-func (c *Client) Flush() error {
+func (c *HttpClient) Flush() error {
 	return c.send()
 }
 
-func (c *Client) Trace() libtsdb.HttpTrace {
+func (c *HttpClient) Trace() libtsdb.HttpTrace {
 	return c.trace
 }
 
-func (c *Client) HttpStatusCode() int {
+func (c *HttpClient) HttpStatusCode() int {
 	return c.trace.StatusCode
 }
 
-func (c *Client) send() error {
+func (c *HttpClient) send() error {
 	// TODO: real bytes send also include header etc, which we didn't take into account of bytes send
 	payloadSize := uint64(c.enc.Len())
 	c.bytesSend += payloadSize

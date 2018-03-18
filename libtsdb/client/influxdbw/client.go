@@ -11,7 +11,7 @@ import (
 	"github.com/libtsdb/libtsdb-go/libtsdb/config"
 )
 
-func New(cfg config.InfluxdbClientConfig) (*genericw.Client, error) {
+func New(cfg config.InfluxdbClientConfig) (*genericw.HttpClient, error) {
 	u, err := url.Parse(cfg.Addr)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't parse server address")
@@ -24,6 +24,6 @@ func New(cfg config.InfluxdbClientConfig) (*genericw.Client, error) {
 	params.Set("db", cfg.Database)
 	baseReq.URL.RawQuery = params.Encode()
 	baseReq.Header.Set("User-Agent", "libtsdb")
-	c := genericw.New(influxdb.Meta(), influxdb.NewEncoder(), baseReq)
+	c := genericw.NewHttp(influxdb.Meta(), influxdb.NewEncoder(), baseReq)
 	return c, nil
 }

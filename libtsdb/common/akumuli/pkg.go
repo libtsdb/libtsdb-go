@@ -1,4 +1,4 @@
-package graphite
+package akumuli
 
 import (
 	"time"
@@ -7,15 +7,15 @@ import (
 )
 
 const (
-	name      = "graphite"
-	precision = time.Second
+	name      = "akumuli"
+	precision = time.Nanosecond
 )
 
 var meta = libtsdb.Meta{
 	Name:               name,
 	TimePrecision:      precision,
 	SupportTag:         true,
-	SupportInt:         false,
+	SupportInt:         true, // TODO: the protocol support int, but is it stored as float?
 	SupportDouble:      true,
 	SupportBatchSeries: true,
 	SupportBatchPoints: false,

@@ -6,6 +6,9 @@ type HttpTrace struct {
 	Error        bool
 	ErrorMessage string
 
+	// TODO: RawSize, meta + points
+	// TODO: MetaSize
+
 	// from net/http/httptrace
 	Start    int64
 	DNSStart int64

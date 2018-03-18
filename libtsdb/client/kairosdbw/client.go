@@ -11,7 +11,7 @@ import (
 	"github.com/libtsdb/libtsdb-go/libtsdb/config"
 )
 
-func New(cfg config.KairosdbClientConfig) (*genericw.Client, error) {
+func New(cfg config.KairosdbClientConfig) (*genericw.HttpClient, error) {
 	u, err := url.Parse(cfg.Addr)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't parse server address")
@@ -20,6 +20,6 @@ func New(cfg config.KairosdbClientConfig) (*genericw.Client, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "can't create base query")
 	}
-	c := genericw.New(kairosdb.Meta(), kairosdb.NewJsonEncoder(), baseReq)
+	c := genericw.NewHttp(kairosdb.Meta(), kairosdb.NewJsonEncoder(), baseReq)
 	return c, nil
 }

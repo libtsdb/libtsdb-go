@@ -29,6 +29,7 @@ type TracedHttpClient interface {
 
 type HttpClient interface {
 	SetHttpClient(client *http.Client)
+	AllowInsecure()
 	HttpStatusCode() int
 }
 
