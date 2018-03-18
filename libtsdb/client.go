@@ -36,6 +36,11 @@ type TracedClient interface {
 	Trace() Trace
 }
 
+type TracedWriteClient interface {
+	TracedClient
+	WriteClient
+}
+
 type TracedHttpClient interface {
 	TracedClient
 	EnableHttpTrace()
