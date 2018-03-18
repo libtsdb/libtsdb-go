@@ -2,6 +2,15 @@
 
 ## Write Telnet
 
+- https://kairosdb.github.io/docs/build/html/telnetapi/Putm.html
+- `putm` requires millisecond, `put` support both second and millisecond
+  - `putm` is NOT for putting multiple values ...
+
+````text
+putm <metric name> <time stamp> <value> <tag> <tag>... \n
+putm load_value_test 1521355855810716 42 host=A
+````
+
 ## Write HTTP
 
 - http://localhost:8080/api/v1/datapoints

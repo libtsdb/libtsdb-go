@@ -83,3 +83,45 @@ func TestJsonEncoder_WriteSeriesDoubleTagged(t *testing.T) {
 	enc.WriteSeriesDoubleTagged(s)
 	assert.Equal(`[{"name":"archive_file_tracked","datapoints":[[1359788100000,12.2],[1359788200000,13.3],[1359788300000,14.25]],"tags":{"host":"server1","data_center":"dc1"}}]`, string(enc.Bytes()))
 }
+
+func TestTelnetEncoder_WritePointIntTagged(t *testing.T) {
+	assert := asst.New(t)
+
+	p := &pb.PointIntTagged{
+		Name:  "archive_file_search",
+		Point: pb.PointInt{T: int64(1359786400000), V: 321},
+		Tags: []pb.Tag{
+			{K: "host", V: "server2"},
+			{K: "region", V: "en-us"},
+		},
+	}
+	enc := NewTelnetEncoder()
+	enc.WritePointIntTagged(p)
+	s := `putm archive_file_search 1359786400000 321 host=server2 region=en-us
+`
+	assert.Equal(s, string(enc.Bytes()))
+}
+
+func TestTelnetEncoder_WriteSeriesDoubleTagged(t *testing.T) {
+	assert := asst.New(t)
+
+	sdt := &pb.SeriesDoubleTagged{
+		Name: "archive_file_tracked",
+		Tags: []pb.Tag{
+			{K: "host", V: "server1"},
+			{K: "data_center", V: "dc1"},
+		},
+		Points: []pb.PointDouble{
+			{T: 1359788100000, V: 12.2},
+			{T: 1359788200000, V: 13.3},
+			{T: 1359788300000, V: 14.25},
+		},
+	}
+	enc := NewTelnetEncoder()
+	enc.WriteSeriesDoubleTagged(sdt)
+	s := `putm archive_file_tracked 1359788100000 12.2 host=server1 data_center=dc1
+putm archive_file_tracked 1359788200000 13.3 host=server1 data_center=dc1
+putm archive_file_tracked 1359788300000 14.25 host=server1 data_center=dc1
+`
+	assert.Equal(s, string(enc.Bytes()))
+}

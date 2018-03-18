@@ -12,7 +12,7 @@ func TestClient_WriteIntPoint(t *testing.T) {
 	t.Skip("require kairosdb running")
 
 	assert := asst.New(t)
-	c, err := New(*config.NewKairosdbClientConfig())
+	c, err := NewHttp(*config.NewKairosdbClientConfig())
 	assert.Nil(err)
 	c.WriteIntPoint(&pb.PointIntTagged{
 		Name:  "archive_file_search",
