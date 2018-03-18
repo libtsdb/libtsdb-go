@@ -23,3 +23,7 @@ func NewHttp(cfg config.KairosdbClientConfig) (*genericw.HttpClient, error) {
 	c := genericw.NewHttp(kairosdb.Meta(), kairosdb.NewJsonEncoder(), baseReq)
 	return c, nil
 }
+
+func NewTcp(cfg config.KairosdbClientConfig) (*genericw.TcpClient, error) {
+	return genericw.NewTcp(kairosdb.Meta(), kairosdb.NewTelnetEncoder(), cfg.TelnetAddr, cfg.Timeout)
+}
