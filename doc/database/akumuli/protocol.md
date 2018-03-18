@@ -2,6 +2,8 @@
 
 - https://github.com/akumuli/Akumuli/wiki/Writing-data-using-the-TCP-API
 
+## TCP Write
+
 non grouped series
 
 - `:` for integer timestamp (unix nano)
@@ -44,3 +46,23 @@ this is very similar to InfluxDB's style
 ````
 
 - [ ] opened a issue to ask if it is possible to support https://github.com/akumuli/Akumuli/issues/260
+
+## HTTP Read
+
+- output format, csv or resp
+
+````json
+{
+    "select": "balancers.cpuload",
+		 "range": {
+        "from": "20120102T123000.000000",
+        "to":   "20190102T123010.000000"
+    }
+}
+````
+
+````text
++balancers.cpuload host=machine1 region=NW
++20141210T151005.000000000
++22
+````

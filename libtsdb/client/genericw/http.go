@@ -24,13 +24,15 @@ var _ libtsdb.HttpClient = (*HttpClient)(nil)
 // HttpClient is a generic HTTP based client for write, it is not go routine safe because encoder
 // TODO: allow insecure, because we have https server with self signed certs, and HTTP/2 can only be used with https
 type HttpClient struct {
-	enc     common.Encoder
-	h       *http.Client
-	baseReq *http.Request
-	meta    libtsdb.Meta
+	// tsdb
+	enc  common.Encoder
+	meta libtsdb.Meta
 
-	// flag for using http trace
-	enableTrace bool
+	// http
+	h           *http.Client
+	insecure    bool
+	baseReq     *http.Request
+	enableTrace bool // use net/http/httprace
 
 	// stat collected by client
 
@@ -39,7 +41,7 @@ type HttpClient struct {
 	proto string
 	trace libtsdb.HttpTrace
 
-	// accumulated counters
+	// accumulated counters TODO: encoder should support this
 	bytesSend          uint64
 	bytesSendSuccess   uint64
 	intPointWritten    uint64
@@ -63,6 +65,16 @@ func (c *HttpClient) DisableHttpTrace() {
 	c.enableTrace = false
 }
 
+func (c *HttpClient) AllowInsecure() {
+	if c.h == nil {
+		return
+	}
+	c.insecure = true
+	if t, ok := c.h.Transport.(*http.Transport); ok {
+		t.TLSClientConfig.InsecureSkipVerify = true
+	}
+}
+
 func (c *HttpClient) Meta() libtsdb.Meta {
 	return c.meta
 }
@@ -74,6 +86,13 @@ func (c *HttpClient) Close() error {
 
 func (c *HttpClient) SetHttpClient(h *http.Client) {
 	c.h = h
+	// TODO: maybe we should not set insecure because the user can set it by themselve since they are already
+	// setting the http client directly ...
+	if c.insecure {
+		if t, ok := c.h.Transport.(*http.Transport); ok {
+			t.TLSClientConfig.InsecureSkipVerify = true
+		}
+	}
 }
 
 // WriteIntPoint only writes to encoder, but does not flush it
