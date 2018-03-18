@@ -13,6 +13,7 @@ import (
 
 var _ libtsdb.TSDBClient = (*TcpClient)(nil)
 var _ libtsdb.WriteClient = (*TcpClient)(nil)
+var _ libtsdb.TracedTcpClient = (*TcpClient)(nil)
 
 // TcpClient encode points using encoder and write to raw tcp connection
 // TODO: re connect when fail
@@ -29,11 +30,17 @@ type TcpClient struct {
 	// TODO: support reconnect
 	reconCount int
 
-	// TODO: stat
-	bytesSend          uint64
-	bytesSendSuccess   uint64
-	intPointWritten    uint64
-	doublePointWritten uint64
+	// stat for single request
+	trace     libtsdb.TcpTrace
+	prevTrace libtsdb.TcpTrace
+
+	// stat for accumulated counters
+	// NOTE: we maintain counter in generic clients so encoder don't need to worry about it
+	totalPayloadSize        int
+	totalRawSize            int
+	totalRawMetaSize        int
+	totalIntPointWritten    int
+	totalDoublePointWritten int
 }
 
 // TODO: we should allow dial later
@@ -57,25 +64,39 @@ func (c *TcpClient) Meta() libtsdb.Meta {
 
 // WriteIntPoint only writes to encoder, but does not flush it
 func (c *TcpClient) WriteIntPoint(p *pb.PointIntTagged) {
-	c.intPointWritten += 1
+	c.totalIntPointWritten += 1
+	c.trace.RawSize += p.RawSize()
+	c.trace.RawMetaSize += p.RawMetaSize()
+	c.totalRawSize += p.RawSize()
+	c.totalRawMetaSize += p.RawMetaSize()
 	c.enc.WritePointIntTagged(p)
 }
 
 // WriteDoublePoint only writes to encoder, but does not flush it
 func (c *TcpClient) WriteDoublePoint(p *pb.PointDoubleTagged) {
-	c.doublePointWritten += 1
+	c.totalDoublePointWritten += 1
+	c.trace.RawSize += p.RawSize()
+	c.trace.RawMetaSize += p.RawMetaSize()
+	c.totalRawSize += p.RawSize()
+	c.totalRawMetaSize += p.RawMetaSize()
 	c.enc.WritePointDoubleTagged(p)
 }
 
-// WriteSeriesIntTagged only writes to encoder, but does not flush it
 func (c *TcpClient) WriteSeriesIntTagged(p *pb.SeriesIntTagged) {
-	c.intPointWritten += uint64(len(p.Points))
+	c.totalIntPointWritten += len(p.Points)
+	c.trace.RawSize += p.RawSize()
+	c.trace.RawMetaSize += p.RawMetaSize()
+	c.totalRawSize += p.RawSize()
+	c.totalRawMetaSize += p.RawMetaSize()
 	c.enc.WriteSeriesIntTagged(p)
 }
 
-// WriteSeriesIntTagged only writes to encoder, but does not flush it
 func (c *TcpClient) WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged) {
-	c.doublePointWritten += uint64(len(p.Points))
+	c.totalDoublePointWritten += len(p.Points)
+	c.trace.RawSize += p.RawSize()
+	c.trace.RawMetaSize += p.RawMetaSize()
+	c.totalRawSize += p.RawSize()
+	c.totalRawMetaSize += p.RawMetaSize()
 	c.enc.WriteSeriesDoubleTagged(p)
 }
 
@@ -90,12 +111,30 @@ func (c *TcpClient) Flush() error {
 	return c.send()
 }
 
+func (c *TcpClient) Trace() libtsdb.Trace {
+	// make a copy, otherwise when the trace is used, the pointer might be pointing to a changed trace
+	cp := c.prevTrace
+	return &cp
+}
+
+func (c *TcpClient) TcpTrace() libtsdb.TcpTrace {
+	return c.prevTrace
+}
+
 func (c *TcpClient) send() error {
+	c.totalPayloadSize += c.enc.Len()
+	c.trace.PayloadSize = c.enc.Len()
+	c.trace.Start = time.Now().UnixNano()
 	_, err := c.conn.Write(c.enc.Bytes())
+	c.trace.End = time.Now().UnixNano()
+	// reset
 	c.enc.Reset()
+	c.prevTrace = c.trace
+	c.trace.Reset()
 	// TODO: retry
-	// TODO: keep stats
 	if err != nil {
+		c.prevTrace.Error = true
+		c.prevTrace.ErrorMessage = err.Error()
 		return errors.Wrap(err, "error send http request")
 	}
 	return nil

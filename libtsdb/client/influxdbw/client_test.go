@@ -18,19 +18,28 @@ func TestClient_WriteIntPoint(t *testing.T) {
 	c.EnableHttpTrace()
 	assert.Nil(err)
 	// TODO: util for point generator
-	c.WriteIntPoint(&pb.PointIntTagged{
-		Name:  "temperaturei",
+	p := &pb.PointIntTagged{
+		Name:  "temperature",
 		Point: pb.PointInt{T: int64(1434055562000000035), V: 35},
 		Tags: []pb.Tag{
 			{K: "machine", V: "unit42"},
 			{K: "type", V: "assembly"},
 		},
-	})
+	}
+	c.WriteIntPoint(p)
 	err = c.Flush()
-	trace := c.Trace()
-	assert.Equal(204, trace.StatusCode)
-	//t.Logf("%v", trace)
 	assert.Nil(err)
+	trace := c.Trace()
+	assert.Equal(204, trace.GetCode())
+	msize := len(p.Name)
+	for _, tg := range p.Tags {
+		msize += len(tg.K) + len(tg.V)
+	}
+	t.Logf("payload size %d", trace.GetPayloadSize())
+	t.Logf("raw size %d", trace.GetRawSize())
+	t.Log("raw meta size", trace.GetRawMetaSize())
+	assert.Equal(msize, trace.GetRawMetaSize())
+	//t.Logf("%v", trace)
 }
 
 func TestClient_WriteDoublePoint(t *testing.T) {
