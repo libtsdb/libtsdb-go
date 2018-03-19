@@ -15,6 +15,8 @@ type Trace interface {
 	GetStartTime() int64
 	// GetEndTime is when the request is finished, response is drained, error or not
 	GetEndTime() int64
+	// GetPoints is number of points written in request
+	GetPoints() int
 	// GetPayloadSize is the size of the payload excluding header etc.
 	GetPayloadSize() int
 	// GetRawSize is the size in byte for meta and points written without serialization, see libtsdbpb sizer.go
@@ -28,6 +30,9 @@ type TcpTrace struct {
 	Code         int // TODO: any code like http status code in tcp ...
 	Error        bool
 	ErrorMessage string
+
+	Points int
+	// TODO: can't count unique series unless we hash
 
 	// size
 	PayloadSize int
@@ -59,6 +64,10 @@ func (t *TcpTrace) GetEndTime() int64 {
 	return t.End
 }
 
+func (t *TcpTrace) GetPoints() int {
+	return t.Points
+}
+
 func (t *TcpTrace) GetPayloadSize() int {
 	return t.PayloadSize
 }
@@ -88,6 +97,9 @@ type HttpTrace struct {
 	StatusCode   int
 	Error        bool
 	ErrorMessage string
+
+	Points int
+	// TODO: can't count unique series unless we hash
 
 	// size
 	PayloadSize int
@@ -129,6 +141,10 @@ func (t *HttpTrace) GetStartTime() int64 {
 
 func (t *HttpTrace) GetEndTime() int64 {
 	return t.End
+}
+
+func (t *HttpTrace) GetPoints() int {
+	return t.Points
 }
 
 func (t *HttpTrace) GetPayloadSize() int {

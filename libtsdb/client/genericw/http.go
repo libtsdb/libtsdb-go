@@ -98,39 +98,51 @@ func (c *HttpClient) SetHttpClient(h *http.Client) {
 
 // WriteIntPoint only writes to encoder, but does not flush it
 func (c *HttpClient) WriteIntPoint(p *pb.PointIntTagged) {
-	c.totalIntPointWritten += 1
+	c.trace.Points += 1
 	c.trace.RawSize += p.RawSize()
 	c.trace.RawMetaSize += p.RawMetaSize()
+
+	c.totalIntPointWritten += 1
 	c.totalRawSize += p.RawSize()
 	c.totalRawMetaSize += p.RawMetaSize()
+
 	c.enc.WritePointIntTagged(p)
 }
 
 // WriteDoublePoint only writes to encoder, but does not flush it
 func (c *HttpClient) WriteDoublePoint(p *pb.PointDoubleTagged) {
-	c.totalDoublePointWritten += 1
+	c.trace.Points += 1
 	c.trace.RawSize += p.RawSize()
 	c.trace.RawMetaSize += p.RawMetaSize()
+
+	c.totalDoublePointWritten += 1
 	c.totalRawSize += p.RawSize()
 	c.totalRawMetaSize += p.RawMetaSize()
+
 	c.enc.WritePointDoubleTagged(p)
 }
 
 func (c *HttpClient) WriteSeriesIntTagged(p *pb.SeriesIntTagged) {
-	c.totalIntPointWritten += len(p.Points)
+	c.trace.Points += len(p.Points)
 	c.trace.RawSize += p.RawSize()
 	c.trace.RawMetaSize += p.RawMetaSize()
+
+	c.totalIntPointWritten += len(p.Points)
 	c.totalRawSize += p.RawSize()
 	c.totalRawMetaSize += p.RawMetaSize()
+
 	c.enc.WriteSeriesIntTagged(p)
 }
 
 func (c *HttpClient) WriteSeriesDoubleTagged(p *pb.SeriesDoubleTagged) {
-	c.totalDoublePointWritten += len(p.Points)
+	c.trace.Points += len(p.Points)
 	c.trace.RawSize += p.RawSize()
 	c.trace.RawMetaSize += p.RawMetaSize()
+
+	c.totalDoublePointWritten += len(p.Points)
 	c.totalRawSize += p.RawSize()
 	c.totalRawMetaSize += p.RawMetaSize()
+
 	c.enc.WriteSeriesDoubleTagged(p)
 }
 
