@@ -147,7 +147,7 @@ func (c *TcpClient) send() error {
 	if err != nil {
 		c.prevTrace.Error = true
 		c.prevTrace.ErrorMessage = err.Error()
-		return errors.Wrap(err, "error send http request")
+		return errors.Wrap(err, "error send tcp request")
 	}
 	return nil
 }
