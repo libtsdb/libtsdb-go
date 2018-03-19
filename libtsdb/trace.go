@@ -85,6 +85,7 @@ func (t *TcpTrace) Reset() {
 	t.Error = false
 	t.ErrorMessage = ""
 
+	t.Points = 0
 	t.PayloadSize = 0
 	t.RawSize = 0
 	t.RawMetaSize = 0
@@ -164,6 +165,7 @@ func (t *HttpTrace) Reset() {
 	t.Error = false
 	t.ErrorMessage = ""
 
+	t.Points = 0
 	t.PayloadSize = 0
 	t.RawSize = 0
 	t.RawMetaSize = 0

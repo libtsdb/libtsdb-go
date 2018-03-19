@@ -34,7 +34,7 @@
     "util/runtimeutil",
     "util/testutil"
   ]
-  revision = "9205d0bbac41b6bc0d3430d077595e178bb4374c"
+  revision = "ae7701f9d583472626a924dd9ce761157fc7ee05"
 
 [[projects]]
   name = "github.com/gogo/protobuf"
@@ -102,7 +102,7 @@
   branch = "master"
   name = "github.com/xephonhq/xephon-k"
   packages = ["xk/transport/grpc"]
-  revision = "cf29c8aa2e809074e16f3864802d028816967815"
+  revision = "08b07578b97f111a6c6e9d001945319d6d8abc69"
 
 [[projects]]
   branch = "master"
@@ -117,7 +117,7 @@
     "proxy",
     "trace"
   ]
-  revision = "d0aafc73d5cdc42264b0af071c261abac580695e"
+  revision = "24dd3780ca4f75fed9f321890729414a4b5d3f13"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -144,7 +144,7 @@
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "df60624c1e9b9d2973e889c7a1cff73155da81c4"
+  revision = "f8c8703595236ae70fdf8789ecb656ea0bcdcf46"
 
 [[projects]]
   name = "google.golang.org/grpc"
