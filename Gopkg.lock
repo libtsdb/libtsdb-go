@@ -6,9 +6,10 @@
   name = "github.com/at15/go.ice"
   packages = [
     "ice/cli",
+    "ice/config",
     "ice/util/logutil"
   ]
-  revision = "1eae51f02b6b9b0e8adf781c6dc570458c18db77"
+  revision = "6e0d9073953d5249c7725a89493355ba57dc97b1"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -71,8 +72,8 @@
     "models",
     "pkg/escape"
   ]
-  revision = "6ac835404e7e64ea7299a6eebcce1ab1ef15fe3c"
-  version = "v1.5.0"
+  revision = "cdae4ccde4c67c3390d8ae8a1a06bd3b4cdce5c5"
+  version = "v1.5.1"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -101,8 +102,13 @@
 [[projects]]
   branch = "master"
   name = "github.com/xephonhq/xephon-k"
-  packages = ["xk/transport/grpc"]
-  revision = "08b07578b97f111a6c6e9d001945319d6d8abc69"
+  packages = [
+    "xk/client",
+    "xk/client/grpcclient",
+    "xk/config",
+    "xk/transport/grpc"
+  ]
+  revision = "00ece222afcac141bc053949d8f48675140f3479"
 
 [[projects]]
   branch = "master"
@@ -117,7 +123,7 @@
     "proxy",
     "trace"
   ]
-  revision = "24dd3780ca4f75fed9f321890729414a4b5d3f13"
+  revision = "6078986fec03a1dcc236c34816c71b0e05018fda"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -144,7 +150,7 @@
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "f8c8703595236ae70fdf8789ecb656ea0bcdcf46"
+  revision = "ab0870e398d5dd054b868c0db1481ab029b9a9f2"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -185,6 +191,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c83cc8e6acbbabe02471bee92515921342eafaf4ae7e3ba6832975e62f3d514d"
+  inputs-digest = "72035bfe5d434528729fb4e2e73abb70bcdc642d7adeba8b96582461f5fd154a"
   solver-name = "gps-cdcl"
   solver-version = 1
