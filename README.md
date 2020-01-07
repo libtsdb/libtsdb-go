@@ -2,6 +2,8 @@
 
 Clients and Server implementation of multiple TSDB protocols in Go
 
+- status: Under major rewrite
+
 ## Supported time series databases
 
 | Database     | client write  | client read   | server write | server read |
@@ -48,6 +50,10 @@ Accumulated results
 
 ## Roadmap
 
+- [ ] archive current branch to archive/xxx
+- [ ] use go mod and fix dependencies
+- [ ] move survey to awesome tsdb
+- [ ] compression etc. (same as libtsdb-rs from here)
 - client write
   - [x] simple text line protocol, InfluxDB, Graphite, Akumuli
   - [x] OpenTSDB(ish) JSON, KairosDB, Heroic, Xephon-K
