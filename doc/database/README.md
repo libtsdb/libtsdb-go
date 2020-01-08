@@ -1,20 +1,35 @@
 # Databases
 
+This folder contains notes on implementation of TSDBs.
+They should be merged into [awesome-time-series-database](https://github.com/xephonhq/awesome-time-series-database) eventually.
+
 Required list in readme
 
-- status: active|dead
-- repo: https://github.com/some/tsdb
-- website: https://some.tsdb.com
-- company: The TSDB Corp.
+- link to [awesome tsdb](https://github.com/xephonhq/awesome-time-series-database), which should contains all the basic meta
+- link to required files within the folder
+- a short overview
+- a key take way from this database
 
-Required files for describing each databases, they will be merged into [awesome-time-series-database](https://github.com/xephonhq/awesome-time-series-database) eventually
+Required files for describing each database. 
 
-- **build.md** how to build it from source locally
-- **docker.md** how to run it using docker(-compose)
-- **config.md** config file example, how to config the system (underlying database, operating system) properly
-- **schema.md** schema for underlying database (i.e. Cassandra, ElasticSearch) if there is any
-- **write-path.md** how data is write into the database, link to source code file if possible
-- **read-path.md** 
+Internal
+
+- **data-model.md** General data model, what is a time series for this TSDB (yeah, this definition varies).
+- **write.md** Write path, link to source w/ commit hash.
+- **protocol.md** Wire protocol format and transport, mainly about write because many TSDB have dedicated query language.
+- **read.md** Read path, link to source w/ commit hash.
+- **query-language.md** Query language.
+- **query-execution.md** Query execution and optimization, especially for distributed ones.
+- **storage-engine.md** Only applies to TSDB w/ their own storage format, i.e. write opaque blob to local fs or object store.
+- **schema.md** Only applies to TSDB w/ underlying database i.e. Cassandra, ElasticSearch
+- **distributed.md** Only applies to distributed TSDB, replication model, consensus protocol. Including those built on top of distributed data store i.e. Cassandra, S3.
+
+Operation
+
+- **build.md** How to build from source locally
+- **docker.md** How to run it using docker(-compose) locally
+- **config.md** Config file example, how to config the system (underlying database, operating system) properly
+- **k8s.md** How to run it on k8s, operator and special things about their operator e.g. local volume
 
 ## TODO
 

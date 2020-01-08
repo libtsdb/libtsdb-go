@@ -8,16 +8,10 @@ git:
 # TODO: use docker service to start influxdb etc. and create database like oltpbench
 # https://github.com/benchhub/oltpbench/blob/config/cleanup-v2/.travis.yml
 go:
-  - 1.9.x
-  - "1.10"
   - tip
 
 install:
-  - go get -u github.com/golang/dep/cmd/dep
-  - dep version
-  - dep ensure
-  - pwd
+  - go version
 
 script:
-#  - make install
-  - make test
+  - go version

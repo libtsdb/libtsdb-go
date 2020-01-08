@@ -1,4 +1,4 @@
-# Write Path
+# Write path for InfluxDB
 
 Based on original notes from Xephon-K
 
