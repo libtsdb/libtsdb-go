@@ -15,3 +15,7 @@ Required files for describing each databases, they will be merged into [awesome-
 - **schema.md** schema for underlying database (i.e. Cassandra, ElasticSearch) if there is any
 - **write-path.md** how data is write into the database, link to source code file if possible
 - **read-path.md** 
+
+## TODO
+
+- [ ] publish the doc

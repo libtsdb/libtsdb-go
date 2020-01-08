@@ -1,4 +1,0 @@
-shells:
-  - code: protoc --proto_path=$GOPATH/src/:. --gogo_out=. ts.proto
-    shell: true
-    cd: true
