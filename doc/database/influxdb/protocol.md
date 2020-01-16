@@ -1,5 +1,17 @@
 # Protocol
 
+The protocol is http based.
+
+## Write
+
+https://v2.docs.influxdata.com/v2.0/write-data/
+
+```text
+mem,host=host1 used_percent=23.43234543 1556892576842902000
+cpu,host=host1 usage_user=3.8234,usage_system=4.23874 1556892726597397000
+mem,host=host1 used_percent=21.83599203 1556892777007291000
+```
+
 ## HTTP JSON Read
 
 ````bash

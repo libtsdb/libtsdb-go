@@ -1,26 +1,54 @@
 # InfluxDB Data Model
 
-- A major difference is InfluxDB has the concept of field, which means multiple value can be associated with a timestamp,
-while most other TSDB are just one timestamp with one value, it seems they are changing towards this direction in the new
-[ifql](https://github.com/influxdata/ifql) and use `join` instead
-- Also it supports `bool` and `string` which is rare is most TSDB but pretty common in most column databases, i.e. Druid
+## TODO
 
-Its internal struct for communicate protocol and storage is different
+- [ ] Its internal struct for communicate protocol and storage is different
+- [ ] Example in other tsdb's format
+
+## Overview
+
+InfluxDB has both name, tag and fields, while most TSDB only has name and tags.
+
+```text
+temperature,machine=unit42,type=assembly internal=32,external=100 1434055562000000035
+---------- ----------------------------- ------------------------ -------------------
+  name           tags                        fields                   time
+```
+
+- `name` is called `measurement`
+- `tags` are called `tag set`
+- `fields` are called `fields set`
+- `time` is unix nano
+
+When saved on disk, each series is identified by `name+tags+field`, e.g. `temperature,machine=unit42,type=assembly internal`.
+
+## Scalar value type
+
+- bool
+- int
+- unsigned int
+- float
+- string
 
 ## Protocol
 
-From https://github.com/influxdata/influxdb/blob/master/models/points.go
+Based on [models/point.go](https://github.com/influxdata/influxdb/blob/master/models/points.go)
 
-- line protocol example `temperature,machine=unit42,type=assembly internal=32,external=100 1434055562000000035`
-- `Point` is a interface instead of a struct
+```text
+temperature,machine=unit42,type=assembly internal=32,external=100 1434055562000000035
+```
+
+- `Point` is an interface instead of a struct
   - `measurement` is what commonly called `series name`, i.e. `cpu`
+  - `tags` is list of string key value pair
+  - `fields` is `map[string]interface{}` because type of value is unknown 
 - `point` is the default implementation, mapping to the line protocol
   - `key` is measurement + tags ` temperature,machine=unit42,type=assembly`
   - `fields` is field names + values `internal=32,external=100`
   - `ts` is timestamp in string `1434055562000000035`
      - using binary format would be much smaller, also text format can use Base64 VLQ like js source map, though it might not be suitable for timestamp
 
-````go
+```go
 // Tag represents a single key/value tag pair.
 type Tag struct {
 	Key   []byte
@@ -48,6 +76,7 @@ type Point interface {
 	Key() []byte
 }
 
+// point is the default implementation of Point.
 type point struct {
 	time time.Time
 	// text encoding of measurement and tags
@@ -66,13 +95,72 @@ type point struct {
 	cachedTags Tags
 	it fieldIterator
 }
-````
+```
 
 ## Storage
 
-- in `func (e *Engine) WritePoints(points []models.Point)` `Point` is changed into `Value`, which is timestamp and value, like most TSDB
-- series name is `measurement` + `tags` + `field`, see [write-path](write-path.md)
-- https://github.com/influxdata/influxdb/blob/master/tsdb/engine/tsm1/encoding.go#L97-L113
+Write has three steps
+
+- convert from line protocol to internal format `tsdb.NewSeriesCollection` and `tsm1.CollectionToValues`
+- write to wal, it use snappy to compress bytes
+- update index `e.index.CreateSeriesListIfNotExists(collection)`
+- write values `e.engine.WriteValues(values)` which actually writes to cache
+- [ ] on disk format and index format, it seems tsm2 is different from tsm1?
+
+```go
+func (e *Engine) WritePoints(ctx context.Context, points []models.Point) error {
+    collection, j := tsdb.NewSeriesCollection(points), 0
+    // Filter by tags etc.
+    // Convert the collection to values for adding to the WAL/Cache.
+	values, err := tsm1.CollectionToValues(collection)
+	// Add the write to the WAL to be replayed if there is a crash or shutdown.
+	if _, err := e.wal.WriteMulti(ctx, values); err != nil {  }
+    return e.writePointsLocked(ctx, collection, values)
+}
+```
+
+- `CollectionToValues` split a point with multiple fields into different series
+  - `[]Point` is converted to `map[string][]Value`
+  - map key is `name+tags+field`, NOTE: there is just one field in key
+  - `Value` contains both timestamp and the scalar value
+
+```text
+Point
+temperature,machine=unit42,type=assembly internal=32,external=100 1434055562000000035
+temperature,machine=unit42,type=assembly internal=38,external=82 1434055562000000036
+
+Map
+{
+    "temperature,machine=unit42,type=assembly#!~#internal": [(1434055562000000035, 32), (1434055562000000036,38)]
+    "temperature,machine=unit42,type=assembly#!~#external": [(1434055562000000035, 100), (1434055562000000036, 92)]
+}
+```
+
+```go
+const keyFieldSeparator = "#!~#"
+
+// tsdb/tsm1/value.go
+func CollectionToValues(collection *tsdb.SeriesCollection) (map[string][]Value, error) {
+    for citer := collection.Iterator(); citer.Next(); {
+            // reset global buf and append key
+            // key is name with tags e.g. temperature,machine=unit42,type=assembly
+            keyBuf = append(keyBuf[:0], citer.Key()...)
+            keyBuf = append(keyBuf, keyFieldSeparator...)
+            baseLen = len(keyBuf)
+            p := citer.Point()
+            iter := p.FieldIterator()
+            t := p.Time().UnixNano()
+    
+            // Loop each field, each field becomes a new series
+            for iter.Next() {
+                keyBuf = append(keyBuf[:baseLen], iter.FieldKey()...)
+                var v Value
+                vs, ok := values[string(keyBuf)]
+                values[string(keyBuf)] = append(vs, v)
+            }
+    }
+}
+```
 
 ````go
 // Value represents a TSM-encoded value.
@@ -94,25 +182,7 @@ type FloatValue struct {
 	unixnano int64
 	value    float64
 }
-
-// IntegerValue represents an int64 value.
-type IntegerValue struct {
-	unixnano int64
-	value    int64
-}
-
-// BooleanValue represents a boolean value.
-type BooleanValue struct {
-	unixnano int64
-	value    bool
-}
-
-// UnsignedValue represents an int64 value.
-type UnsignedValue struct {
-	unixnano int64
-	value    uint64
-}
-
+// ... and other types
 // StringValue represents a string value.
 type StringValue struct {
 	unixnano int64

@@ -1,9 +1,14 @@
 # InfluxDB
 
-- [Model](model.md)
+- [Data Model](model.md)
+
+## Client
+
+- https://github.com/influxdata/influxdb-client-go
 
 ## Ref
 
+- https://v2.docs.influxdata.com/v2.0/
 - https://www.influxdata.com/blog/influxdb-internals-101-part-one/ data model, TSM
 - https://www.influxdata.com/blog/influxdb-internals-101-part-two/ query, IFQL
 

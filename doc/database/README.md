@@ -14,7 +14,7 @@ Required files for describing each database.
 
 Internal
 
-- **data-model.md** General data model, what is a time series for this TSDB (yeah, this definition varies).
+- **model.md** General data model, what is a time series for this TSDB (yeah, this definition varies).
 - **write.md** Write path, link to source w/ commit hash.
 - **protocol.md** Wire protocol format and transport, mainly about write because many TSDB have dedicated query language.
 - **read.md** Read path, link to source w/ commit hash.
