@@ -2,20 +2,16 @@
 
 There is no way to write to prometheus directly, but prometheus can write to external system
 
-## Remote Write 
-
-- https://github.com/prometheus/prometheus/tree/master/prompb
-- it seems there is no push down to remote storage, promql has aggregation, but it only has label matcher
-
 ````proto
 message Sample {
   double value    = 1;
   int64 timestamp = 2;
 }
 
+// TimeSeries represents samples and labels for a single time series.
 message TimeSeries {
-  repeated Label labels   = 1;
-  repeated Sample samples = 2;
+  repeated Label labels   = 1 [(gogoproto.nullable) = false];
+  repeated Sample samples = 2 [(gogoproto.nullable) = false];
 }
 
 message Label {
@@ -27,44 +23,40 @@ message Labels {
   repeated Label labels = 1 [(gogoproto.nullable) = false];
 }
 
-// Matcher specifies a rule, which can match or set of labels or not.
-message LabelMatcher {
-  enum Type {
-    EQ  = 0;
-    NEQ = 1;
-    RE  = 2;
-    NRE = 3;
+// Chunk represents a TSDB chunk.
+// Time range [min, max] is inclusive.
+message Chunk {
+  int64 min_time_ms = 1;
+  int64 max_time_ms = 2;
+
+  // We require this to match chunkenc.Encoding.
+  enum Encoding {
+    UNKNOWN = 0;
+    XOR     = 1;
   }
-  Type type    = 1;
-  string name  = 2;
-  string value = 3;
+  Encoding type  = 3;
+  bytes data     = 4;
+}
+
+// ChunkedSeries represents single, encoded time series.
+message ChunkedSeries {
+  // Labels should be sorted.
+  repeated Label labels = 1 [(gogoproto.nullable) = false];
+  // Chunks will be in start time order and may overlap.
+  repeated Chunk chunks = 2 [(gogoproto.nullable) = false];
 }
 ````
+
+## Remote Write 
+
+- https://github.com/prometheus/prometheus/tree/master/prompb
+- it seems there is no push down to remote storage, promql has aggregation, but it only has label matcher
 
 ````proto
 message WriteRequest {
   repeated prometheus.TimeSeries timeseries = 1;
 }
-
-message ReadRequest {
-  repeated Query queries = 1;
-}
-
-message ReadResponse {
-  // In same order as the request's queries.
-  repeated QueryResult results = 1;
-}
-
-message Query {
-  int64 start_timestamp_ms = 1;
-  int64 end_timestamp_ms = 2;
-  repeated prometheus.LabelMatcher matchers = 3;
-}
-
-message QueryResult {
-  // Samples within a time series must be ordered by time.
-  repeated prometheus.TimeSeries timeseries = 1;
-}
 ````
 
-There is [push gateway](https://github.com/prometheus/pushgateway), but it's a standalone server
+There is [push gateway](https://github.com/prometheus/pushgateway), but it's a standalone server that expose metric.
+Should be able to test other system like thanos etc. Or write a server using tsdb directly.

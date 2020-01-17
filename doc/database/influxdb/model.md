@@ -3,11 +3,11 @@
 ## TODO
 
 - [ ] Its internal struct for communicate protocol and storage is different
-- [ ] Example in other tsdb's format
+- [ ] compare example with other tsdb
 
 ## Overview
 
-InfluxDB has both name, tag and fields, while most TSDB only has name and tags.
+InfluxDB has both name, tag, fields and time, while most TSDB only has name, tags, a single value and time.
 
 ```text
 temperature,machine=unit42,type=assembly internal=32,external=100 1434055562000000035
