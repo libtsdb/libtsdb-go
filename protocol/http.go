@@ -9,7 +9,6 @@ import (
 
 	"github.com/dyweb/gommon/errors"
 	"github.com/dyweb/gommon/util/httputil"
-	"github.com/libtsdb/libtsdb-go/database"
 	"github.com/libtsdb/libtsdb-go/tspb"
 	"github.com/libtsdb/libtsdb-go/util/bytesutil"
 )
@@ -18,7 +17,6 @@ import (
 type HttpClient struct {
 	// tsdb
 	enc  Encoder
-	meta database.Meta
 
 	// http
 	h           *http.Client
@@ -43,12 +41,11 @@ type HttpClient struct {
 	// TODO: can't count unique series written unless we hash series
 }
 
-func NewHttp(meta database.Meta, encoder Encoder, req *http.Request) *HttpClient {
+func NewHttp(encoder Encoder, req *http.Request) *HttpClient {
 	return &HttpClient{
 		enc:     encoder,
 		h:       httputil.NewUnPooledClient(),
 		baseReq: req,
-		meta:    meta,
 	}
 }
 
@@ -68,10 +65,6 @@ func (c *HttpClient) AllowInsecure() {
 	if t, ok := c.h.Transport.(*http.Transport); ok {
 		t.TLSClientConfig.InsecureSkipVerify = true
 	}
-}
-
-func (c *HttpClient) Meta() database.Meta {
-	return c.meta
 }
 
 func (c *HttpClient) Close() error {
