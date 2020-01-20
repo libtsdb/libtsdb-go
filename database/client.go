@@ -9,7 +9,6 @@ import (
 
 // TSBClient returns meta of the database including its protocol, data type support
 type TSDBClient interface {
-	Meta() Meta
 	Close() error
 }
 

@@ -3,7 +3,6 @@ package protocol
 var _ Trace = (*TcpTrace)(nil)
 var _ Trace = (*HttpTrace)(nil)
 
-// FIXME: trace is copied from xephon-b/pkg/metrics
 type Trace interface {
 	// GetError specifies if this result is an error
 	GetError() bool

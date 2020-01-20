@@ -9,7 +9,7 @@ import (
 	"github.com/libtsdb/libtsdb-go/protocol"
 )
 
-func New(cfg config.InfluxdbClientConfig) (*protocol.HTTPClient, error) {
+func NewInfluxDBClient(cfg config.InfluxdbClientConfig) (*protocol.HTTPClient, error) {
 	u, err := url.Parse(cfg.Addr)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't parse server address")
