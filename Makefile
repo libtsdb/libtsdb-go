@@ -17,7 +17,7 @@ clean:
 
 .PHONY: test
 test:
-	go test -v -cover ./libtsdb/...
+	go test -v -cover $(PKGS)
 
 .PHONY: fmt
 fmt:

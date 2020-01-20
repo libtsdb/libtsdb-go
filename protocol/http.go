@@ -13,10 +13,10 @@ import (
 	"github.com/libtsdb/libtsdb-go/util/bytesutil"
 )
 
-// HttpClient is a generic HTTP based client for write, it is not go routine safe because encoder
-type HttpClient struct {
+// HTTPClient is a generic HTTP based client for write, it is not go routine safe because encoder
+type HTTPClient struct {
 	// tsdb
-	enc  Encoder
+	enc Encoder
 
 	// http
 	h           *http.Client
@@ -41,23 +41,23 @@ type HttpClient struct {
 	// TODO: can't count unique series written unless we hash series
 }
 
-func NewHttp(encoder Encoder, req *http.Request) *HttpClient {
-	return &HttpClient{
+func NewHTTPClient(encoder Encoder, req *http.Request) *HTTPClient {
+	return &HTTPClient{
 		enc:     encoder,
 		h:       httputil.NewUnPooledClient(),
 		baseReq: req,
 	}
 }
 
-func (c *HttpClient) EnableHttpTrace() {
+func (c *HTTPClient) EnableHttpTrace() {
 	c.enableTrace = true
 }
 
-func (c *HttpClient) DisableHttpTrace() {
+func (c *HTTPClient) DisableHttpTrace() {
 	c.enableTrace = false
 }
 
-func (c *HttpClient) AllowInsecure() {
+func (c *HTTPClient) AllowInsecure() {
 	if c.h == nil {
 		return
 	}
@@ -67,12 +67,12 @@ func (c *HttpClient) AllowInsecure() {
 	}
 }
 
-func (c *HttpClient) Close() error {
+func (c *HTTPClient) Close() error {
 	// http client doesn't not have methods for closing it ...
 	return nil
 }
 
-func (c *HttpClient) SetHttpClient(h *http.Client) {
+func (c *HTTPClient) SetHttpClient(h *http.Client) {
 	c.h = h
 	// TODO: maybe we should not set insecure because the user can set it by themselve since they are already
 	// setting the http client directly ...
@@ -84,7 +84,7 @@ func (c *HttpClient) SetHttpClient(h *http.Client) {
 }
 
 // WriteIntPoint only writes to encoder, but does not flush it
-func (c *HttpClient) WriteIntPoint(p *tspb.PointIntTagged) {
+func (c *HTTPClient) WriteIntPoint(p *tspb.PointIntTagged) {
 	c.trace.Points += 1
 	c.trace.RawSize += p.RawSize()
 	c.trace.RawMetaSize += p.RawMetaSize()
@@ -97,7 +97,7 @@ func (c *HttpClient) WriteIntPoint(p *tspb.PointIntTagged) {
 }
 
 // WriteDoublePoint only writes to encoder, but does not flush it
-func (c *HttpClient) WriteDoublePoint(p *tspb.PointDoubleTagged) {
+func (c *HTTPClient) WriteDoublePoint(p *tspb.PointDoubleTagged) {
 	c.trace.Points += 1
 	c.trace.RawSize += p.RawSize()
 	c.trace.RawMetaSize += p.RawMetaSize()
@@ -109,7 +109,7 @@ func (c *HttpClient) WriteDoublePoint(p *tspb.PointDoubleTagged) {
 	c.enc.WritePointDoubleTagged(p)
 }
 
-func (c *HttpClient) WriteSeriesIntTagged(p *tspb.SeriesIntTagged) {
+func (c *HTTPClient) WriteSeriesIntTagged(p *tspb.SeriesIntTagged) {
 	c.trace.Points += len(p.Points)
 	c.trace.RawSize += p.RawSize()
 	c.trace.RawMetaSize += p.RawMetaSize()
@@ -121,7 +121,7 @@ func (c *HttpClient) WriteSeriesIntTagged(p *tspb.SeriesIntTagged) {
 	c.enc.WriteSeriesIntTagged(p)
 }
 
-func (c *HttpClient) WriteSeriesDoubleTagged(p *tspb.SeriesDoubleTagged) {
+func (c *HTTPClient) WriteSeriesDoubleTagged(p *tspb.SeriesDoubleTagged) {
 	c.trace.Points += len(p.Points)
 	c.trace.RawSize += p.RawSize()
 	c.trace.RawMetaSize += p.RawMetaSize()
@@ -134,25 +134,25 @@ func (c *HttpClient) WriteSeriesDoubleTagged(p *tspb.SeriesDoubleTagged) {
 }
 
 // Flush sends encoded data to server and reset encoder
-func (c *HttpClient) Flush() error {
+func (c *HTTPClient) Flush() error {
 	return c.send()
 }
 
-func (c *HttpClient) Trace() Trace {
+func (c *HTTPClient) Trace() Trace {
 	// make a copy, otherwise when the trace is used, the pointer might be pointing to a changed trace
 	cp := c.prevTrace
 	return &cp
 }
 
-func (c *HttpClient) HttpTrace() HttpTrace {
+func (c *HTTPClient) HttpTrace() HttpTrace {
 	return c.prevTrace
 }
 
-func (c *HttpClient) HttpStatusCode() int {
+func (c *HTTPClient) HttpStatusCode() int {
 	return c.prevTrace.StatusCode
 }
 
-func (c *HttpClient) send() error {
+func (c *HTTPClient) send() error {
 	// TODO: real bytes send also include http header etc, which we didn't take into account of bytes send
 	c.totalPayloadSize += c.enc.Len()
 	c.trace.PayloadSize = c.enc.Len()

@@ -47,7 +47,7 @@ func GetDatabaseMeta(name string) (Meta, error) {
 	if m, ok := metas[name]; ok {
 		return m, nil
 	} else {
-		return emptyMeta, errors.Errorf("database %s didn't register meta")
+		return emptyMeta, errors.Errorf("database %s didn't register meta", name)
 	}
 }
 
