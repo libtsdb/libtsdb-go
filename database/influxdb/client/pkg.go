@@ -5,11 +5,22 @@ import (
 	"net/url"
 
 	"github.com/dyweb/gommon/errors"
+	"github.com/libtsdb/libtsdb-go/database"
+	"github.com/libtsdb/libtsdb-go/database/influxdb"
 	"github.com/libtsdb/libtsdb-go/database/influxdb/config"
 	"github.com/libtsdb/libtsdb-go/protocol"
 )
 
-func NewInfluxDBClient(cfg config.InfluxdbClientConfig) (*protocol.HTTPClient, error) {
+type InfluxDBClient struct {
+	*protocol.HTTPClient
+	meta database.Meta
+}
+
+func (c *InfluxDBClient) Meta() database.Meta {
+	return c.meta
+}
+
+func NewInfluxDBClient(cfg config.InfluxdbClientConfig) (*InfluxDBClient, error) {
 	u, err := url.Parse(cfg.Addr)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't parse server address")
@@ -23,5 +34,5 @@ func NewInfluxDBClient(cfg config.InfluxdbClientConfig) (*protocol.HTTPClient, e
 	baseReq.URL.RawQuery = params.Encode()
 	baseReq.Header.Set("User-Agent", "libtsdb")
 	c := protocol.NewHTTPClient(NewInfluxDBEncoder(), baseReq)
-	return c, nil
+	return &InfluxDBClient{HTTPClient: c, meta: influxdb.Meta()}, nil
 }
