@@ -82,13 +82,11 @@ func (e *KairosDBJSONEncoder) WriteSeriesIntTagged(p *tspb.SeriesIntTagged) {
 	e.Buf = append(e.Buf, `{"name":"`...)
 	e.Buf = append(e.Buf, p.Name...)
 	e.Buf = append(e.Buf, `","datapoints":[`...)
-	// TODO: use i or tmp var? need benchmark to see which is faster, this also applies to tags
-	// TODO: 2 years later ... why was I spending time on those micro optimizations instead of more important problems ...
-	for i := range p.Points {
+	for _, p := range p.Points {
 		e.Buf = append(e.Buf, '[')
-		e.Buf = strconv.AppendInt(e.Buf, p.Points[i].Time, 10)
+		e.Buf = strconv.AppendInt(e.Buf, p.Time, 10)
 		e.Buf = append(e.Buf, ',')
-		e.Buf = strconv.AppendInt(e.Buf, p.Points[i].Value, 10)
+		e.Buf = strconv.AppendInt(e.Buf, p.Value, 10)
 		e.Buf = append(e.Buf, `],`...)
 	}
 	e.Buf[len(e.Buf)-1] = ']'
@@ -108,12 +106,11 @@ func (e *KairosDBJSONEncoder) WriteSeriesDoubleTagged(p *tspb.SeriesDoubleTagged
 	e.Buf = append(e.Buf, `{"name":"`...)
 	e.Buf = append(e.Buf, p.Name...)
 	e.Buf = append(e.Buf, `","datapoints":[`...)
-	// TODO: use i or tmp var? need benchmark to see which is faster, this also applies to tags
-	for i := range p.Points {
+	for _, p := range p.Points {
 		e.Buf = append(e.Buf, '[')
-		e.Buf = strconv.AppendInt(e.Buf, p.Points[i].Time, 10)
+		e.Buf = strconv.AppendInt(e.Buf, p.Time, 10)
 		e.Buf = append(e.Buf, ',')
-		e.Buf = strconv.AppendFloat(e.Buf, p.Points[i].Value, 'f', -1, 64)
+		e.Buf = strconv.AppendFloat(e.Buf, p.Value, 'f', -1, 64)
 		e.Buf = append(e.Buf, `],`...)
 	}
 	e.Buf[len(e.Buf)-1] = ']'
