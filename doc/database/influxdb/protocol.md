@@ -2,7 +2,7 @@
 
 The protocol is http based.
 
-## Write
+## Write HTTP Line protocol
 
 https://v2.docs.influxdata.com/v2.0/write-data/
 
@@ -12,7 +12,7 @@ cpu,host=host1 usage_user=3.8234,usage_system=4.23874 1556892726597397000
 mem,host=host1 used_percent=21.83599203 1556892777007291000
 ```
 
-## HTTP JSON Read
+## Read HTTP JSON
 
 ````bash
 curl -G 'http://localhost:8086/query?pretty=true' --data-urlencode "db=mydb" --data-urlencode "q=SELECT \"value\" FROM \"cpu_load_short\" WHERE \"region\"='us-west'"

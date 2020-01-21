@@ -33,4 +33,4 @@ Operation
 
 ## TODO
 
-- [ ] publish the doc
+- [ ] publish the doc or just move it to awesome-tsdb?
