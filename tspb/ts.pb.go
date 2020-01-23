@@ -25,11 +25,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Tag struct {
-	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Key   string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (m *Tag) Reset()         { *m = Tag{} }
@@ -67,11 +64,8 @@ var xxx_messageInfo_Tag proto.InternalMessageInfo
 
 // === point ===
 type PointInt struct {
-	Time                 int64    `protobuf:"varint,1,opt,name=time,proto3" json:"time,omitempty"`
-	Value                int64    `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Time  int64 `protobuf:"varint,1,opt,name=time,proto3" json:"time,omitempty"`
+	Value int64 `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (m *PointInt) Reset()         { *m = PointInt{} }
@@ -108,12 +102,9 @@ func (m *PointInt) XXX_DiscardUnknown() {
 var xxx_messageInfo_PointInt proto.InternalMessageInfo
 
 type PointIntTagged struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Point                PointInt `protobuf:"bytes,2,opt,name=point,proto3" json:"point"`
-	Tags                 []Tag    `protobuf:"bytes,3,rep,name=tags,proto3" json:"tags"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Name  string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Point PointInt `protobuf:"bytes,2,opt,name=point,proto3" json:"point"`
+	Tags  []Tag    `protobuf:"bytes,3,rep,name=tags,proto3" json:"tags"`
 }
 
 func (m *PointIntTagged) Reset()         { *m = PointIntTagged{} }
@@ -150,11 +141,8 @@ func (m *PointIntTagged) XXX_DiscardUnknown() {
 var xxx_messageInfo_PointIntTagged proto.InternalMessageInfo
 
 type PointDouble struct {
-	Time                 int64    `protobuf:"varint,1,opt,name=time,proto3" json:"time,omitempty"`
-	Value                float64  `protobuf:"fixed64,2,opt,name=value,proto3" json:"value,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Time  int64   `protobuf:"varint,1,opt,name=time,proto3" json:"time,omitempty"`
+	Value float64 `protobuf:"fixed64,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (m *PointDouble) Reset()         { *m = PointDouble{} }
@@ -191,12 +179,9 @@ func (m *PointDouble) XXX_DiscardUnknown() {
 var xxx_messageInfo_PointDouble proto.InternalMessageInfo
 
 type PointDoubleTagged struct {
-	Name                 string      `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Point                PointDouble `protobuf:"bytes,2,opt,name=point,proto3" json:"point"`
-	Tags                 []Tag       `protobuf:"bytes,3,rep,name=tags,proto3" json:"tags"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
+	Name  string      `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Point PointDouble `protobuf:"bytes,2,opt,name=point,proto3" json:"point"`
+	Tags  []Tag       `protobuf:"bytes,3,rep,name=tags,proto3" json:"tags"`
 }
 
 func (m *PointDoubleTagged) Reset()         { *m = PointDoubleTagged{} }
@@ -235,11 +220,8 @@ var xxx_messageInfo_PointDoubleTagged proto.InternalMessageInfo
 // === series without data ===
 // EmptySeries only contains meta and has no data
 type EmptySeries struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Tags                 []Tag    `protobuf:"bytes,2,rep,name=tags,proto3" json:"tags"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Tags []Tag  `protobuf:"bytes,2,rep,name=tags,proto3" json:"tags"`
 }
 
 func (m *EmptySeries) Reset()         { *m = EmptySeries{} }
@@ -277,12 +259,9 @@ var xxx_messageInfo_EmptySeries proto.InternalMessageInfo
 
 // === series row format ===
 type SeriesIntTagged struct {
-	Name                 string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Points               []PointInt `protobuf:"bytes,2,rep,name=points,proto3" json:"points"`
-	Tags                 []Tag      `protobuf:"bytes,3,rep,name=tags,proto3" json:"tags"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
+	Name   string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Points []PointInt `protobuf:"bytes,2,rep,name=points,proto3" json:"points"`
+	Tags   []Tag      `protobuf:"bytes,3,rep,name=tags,proto3" json:"tags"`
 }
 
 func (m *SeriesIntTagged) Reset()         { *m = SeriesIntTagged{} }
@@ -319,12 +298,9 @@ func (m *SeriesIntTagged) XXX_DiscardUnknown() {
 var xxx_messageInfo_SeriesIntTagged proto.InternalMessageInfo
 
 type SeriesDoubleTagged struct {
-	Name                 string        `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Points               []PointDouble `protobuf:"bytes,2,rep,name=points,proto3" json:"points"`
-	Tags                 []Tag         `protobuf:"bytes,3,rep,name=tags,proto3" json:"tags"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
+	Name   string        `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Points []PointDouble `protobuf:"bytes,2,rep,name=points,proto3" json:"points"`
+	Tags   []Tag         `protobuf:"bytes,3,rep,name=tags,proto3" json:"tags"`
 }
 
 func (m *SeriesDoubleTagged) Reset()         { *m = SeriesDoubleTagged{} }
@@ -362,13 +338,10 @@ var xxx_messageInfo_SeriesDoubleTagged proto.InternalMessageInfo
 
 // === series column format ==
 type SeriesIntTaggedColumnar struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Times                []int64  `protobuf:"varint,2,rep,packed,name=times,proto3" json:"times,omitempty"`
-	Values               []int64  `protobuf:"varint,3,rep,packed,name=values,proto3" json:"values,omitempty"`
-	Tags                 []Tag    `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Name   string  `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Times  []int64 `protobuf:"varint,2,rep,packed,name=times,proto3" json:"times,omitempty"`
+	Values []int64 `protobuf:"varint,3,rep,packed,name=values,proto3" json:"values,omitempty"`
+	Tags   []Tag   `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags"`
 }
 
 func (m *SeriesIntTaggedColumnar) Reset()         { *m = SeriesIntTaggedColumnar{} }
@@ -405,13 +378,10 @@ func (m *SeriesIntTaggedColumnar) XXX_DiscardUnknown() {
 var xxx_messageInfo_SeriesIntTaggedColumnar proto.InternalMessageInfo
 
 type SeriesDoubleTaggedColumnar struct {
-	Name                 string    `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Times                []int64   `protobuf:"varint,2,rep,packed,name=times,proto3" json:"times,omitempty"`
-	Values               []float64 `protobuf:"fixed64,3,rep,packed,name=values,proto3" json:"values,omitempty"`
-	Tags                 []Tag     `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
+	Name   string    `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Times  []int64   `protobuf:"varint,2,rep,packed,name=times,proto3" json:"times,omitempty"`
+	Values []float64 `protobuf:"fixed64,3,rep,packed,name=values,proto3" json:"values,omitempty"`
+	Tags   []Tag     `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags"`
 }
 
 func (m *SeriesDoubleTaggedColumnar) Reset()         { *m = SeriesDoubleTaggedColumnar{} }
@@ -463,32 +433,33 @@ func init() {
 func init() { proto.RegisterFile("ts.proto", fileDescriptor_2536a6c9e9d6ef41) }
 
 var fileDescriptor_2536a6c9e9d6ef41 = []byte{
-	// 391 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0x41, 0x6b, 0xe2, 0x40,
-	0x14, 0x80, 0x1d, 0x27, 0x8a, 0xbe, 0x80, 0xbb, 0x0e, 0xe2, 0x8a, 0x87, 0xac, 0xb8, 0x17, 0x59,
-	0xd6, 0x08, 0xee, 0xc2, 0xde, 0xdd, 0x6d, 0xa1, 0xb7, 0x92, 0x7a, 0xea, 0x2d, 0x69, 0xd3, 0x69,
-	0xa8, 0xc9, 0x04, 0x33, 0x29, 0x95, 0x42, 0x29, 0xf4, 0xcf, 0x79, 0xec, 0x2f, 0x28, 0xad, 0xbf,
-	0xa4, 0xe4, 0x4d, 0x52, 0xd4, 0xda, 0x58, 0xdb, 0xdb, 0x7b, 0xce, 0xfb, 0xde, 0xfb, 0xe6, 0x31,
-	0x06, 0x2a, 0x32, 0x32, 0xc3, 0xa9, 0x90, 0x82, 0x69, 0x32, 0x0a, 0x9d, 0x76, 0x9f, 0x7b, 0xf2,
-	0x3c, 0x76, 0xcc, 0x13, 0xe1, 0x0f, 0xb8, 0xe0, 0x62, 0x80, 0x87, 0x4e, 0x7c, 0x86, 0x19, 0x26,
-	0x18, 0x29, 0xa8, 0xdb, 0x07, 0x3a, 0xb6, 0x39, 0xfb, 0x0a, 0xf4, 0xc2, 0x9d, 0xb5, 0x48, 0x87,
-	0xf4, 0xaa, 0x56, 0x12, 0xb2, 0x06, 0x94, 0x2e, 0xed, 0x49, 0xec, 0xb6, 0x8a, 0xf8, 0x9b, 0x4a,
-	0xba, 0x7f, 0xa0, 0x72, 0x28, 0xbc, 0x40, 0x1e, 0x04, 0x92, 0x31, 0xd0, 0xa4, 0xe7, 0xbb, 0x08,
-	0x51, 0x0b, 0xe3, 0x55, 0x8a, 0x66, 0x54, 0x0c, 0xb5, 0x8c, 0x1a, 0xdb, 0x9c, 0xbb, 0xa7, 0x09,
-	0x1b, 0xd8, 0x29, 0x5b, 0xb5, 0x30, 0x66, 0x3f, 0xa1, 0x14, 0x26, 0x55, 0xc8, 0xea, 0xc3, 0x9a,
-	0x99, 0xdc, 0xc7, 0xcc, 0xc0, 0x91, 0x36, 0x7f, 0xf8, 0x5e, 0xb0, 0x54, 0x09, 0xfb, 0x01, 0x9a,
-	0xb4, 0x79, 0xd4, 0xa2, 0x1d, 0xda, 0xd3, 0x87, 0x55, 0x55, 0x3a, 0xb6, 0x79, 0x5a, 0x85, 0x87,
-	0xdd, 0xbf, 0xa0, 0x23, 0xfd, 0x5f, 0xc4, 0xce, 0xc4, 0xdd, 0xee, 0x4b, 0x32, 0xdf, 0x6b, 0xa8,
-	0x2f, 0x81, 0x39, 0xca, 0xfd, 0x55, 0xe5, 0xfa, 0x92, 0xb2, 0x62, 0x3f, 0x60, 0xbd, 0x0f, 0xfa,
-	0x9e, 0x1f, 0xca, 0xd9, 0x91, 0x3b, 0xf5, 0xdc, 0x68, 0xe3, 0xd8, 0xac, 0x4f, 0x31, 0xaf, 0xcf,
-	0x15, 0x7c, 0x51, 0x2d, 0xf2, 0xb7, 0xfe, 0x0b, 0xca, 0x28, 0x97, 0x75, 0xdb, 0xbc, 0xf6, 0xb4,
-	0xe6, 0x7d, 0x37, 0xb8, 0x01, 0xa6, 0x26, 0x6f, 0xdd, 0xdf, 0x60, 0x6d, 0xf8, 0x9b, 0x0b, 0xdc,
-	0x69, 0xfe, 0x2d, 0x81, 0x6f, 0x6b, 0x57, 0xff, 0x27, 0x26, 0xb1, 0x1f, 0xd8, 0xd3, 0x8d, 0x16,
-	0x0d, 0x28, 0x25, 0x8f, 0x41, 0x49, 0x50, 0x4b, 0x25, 0xac, 0x09, 0x65, 0x7c, 0x0d, 0x6a, 0x18,
-	0xb5, 0xd2, 0xec, 0x45, 0x41, 0xcb, 0x53, 0xb8, 0x23, 0xd0, 0x7e, 0xbd, 0x83, 0x4f, 0x5b, 0x90,
-	0x9d, 0x2c, 0x46, 0xcd, 0xf9, 0x93, 0x51, 0x98, 0x2f, 0x0c, 0x72, 0xbf, 0x30, 0xc8, 0xe3, 0xc2,
-	0x20, 0xc7, 0xf8, 0x8d, 0x70, 0xca, 0xf8, 0xdf, 0xff, 0xfd, 0x1c, 0x00, 0x00, 0xff, 0xff, 0x61,
-	0x09, 0x3d, 0xf6, 0x3c, 0x04, 0x00, 0x00,
+	// 405 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0x41, 0x4f, 0xe2, 0x40,
+	0x14, 0x80, 0x3b, 0x4c, 0x21, 0xf0, 0x9a, 0xb0, 0xcb, 0x84, 0xec, 0x12, 0x0e, 0x5d, 0xd2, 0xbd,
+	0x90, 0xcd, 0x52, 0x12, 0x76, 0x93, 0xbd, 0xb3, 0x6a, 0xe2, 0xcd, 0x54, 0x4e, 0xde, 0x5a, 0xad,
+	0x63, 0x23, 0xed, 0x34, 0x74, 0x6a, 0x24, 0x26, 0xc6, 0xc4, 0x3f, 0xe0, 0xcf, 0xe2, 0xc8, 0xd1,
+	0x93, 0x51, 0xf8, 0x23, 0xa6, 0x33, 0xad, 0x01, 0xc4, 0x22, 0x7a, 0x7b, 0xaf, 0x7d, 0xdf, 0x7b,
+	0xdf, 0xbc, 0x4c, 0x06, 0xca, 0x3c, 0x32, 0xc3, 0x11, 0xe3, 0x8c, 0xa8, 0x3c, 0x0a, 0x9d, 0x66,
+	0x87, 0x7a, 0xfc, 0x2c, 0x76, 0xcc, 0x63, 0xe6, 0x77, 0x29, 0xa3, 0xac, 0x2b, 0x7e, 0x3a, 0xf1,
+	0xa9, 0xc8, 0x44, 0x22, 0x22, 0x09, 0x19, 0x1d, 0xc0, 0x03, 0x9b, 0x92, 0xaf, 0x80, 0xcf, 0xdd,
+	0x71, 0x03, 0xb5, 0x50, 0xbb, 0x62, 0x25, 0x21, 0xa9, 0x43, 0xf1, 0xc2, 0x1e, 0xc6, 0x6e, 0xa3,
+	0x20, 0xbe, 0xc9, 0xc4, 0xf8, 0x0b, 0xe5, 0x03, 0xe6, 0x05, 0x7c, 0x3f, 0xe0, 0x84, 0x80, 0xca,
+	0x3d, 0xdf, 0x15, 0x10, 0xb6, 0x44, 0xbc, 0x4c, 0xe1, 0x8c, 0x8a, 0xa1, 0x9a, 0x51, 0x03, 0x9b,
+	0x52, 0xf7, 0x24, 0x61, 0x03, 0x3b, 0x65, 0x2b, 0x96, 0x88, 0xc9, 0x2f, 0x28, 0x86, 0x49, 0x95,
+	0x60, 0xb5, 0x5e, 0xd5, 0x4c, 0xce, 0x63, 0x66, 0x60, 0x5f, 0x9d, 0x3c, 0xfc, 0x50, 0x2c, 0x59,
+	0x42, 0x7e, 0x82, 0xca, 0x6d, 0x1a, 0x35, 0x70, 0x0b, 0xb7, 0xb5, 0x5e, 0x45, 0x96, 0x0e, 0x6c,
+	0x9a, 0x56, 0x89, 0x9f, 0xc6, 0x3f, 0xd0, 0x04, 0xbd, 0xc3, 0x62, 0x67, 0xe8, 0x6e, 0xf6, 0x45,
+	0x99, 0xef, 0x15, 0xd4, 0x16, 0xc0, 0x1c, 0xe5, 0xce, 0xb2, 0x72, 0x6d, 0x41, 0x59, 0xb2, 0x1f,
+	0xb0, 0xde, 0x03, 0x6d, 0xd7, 0x0f, 0xf9, 0xf8, 0xd0, 0x1d, 0x79, 0x6e, 0xb4, 0x76, 0x6c, 0xd6,
+	0xa7, 0x90, 0xd7, 0xe7, 0x12, 0xbe, 0xc8, 0x16, 0xf9, 0x5b, 0xff, 0x0d, 0x25, 0x21, 0x97, 0x75,
+	0x5b, 0xbf, 0xf6, 0xb4, 0xe6, 0x7d, 0x27, 0xb8, 0x06, 0x22, 0x27, 0x6f, 0xdc, 0x5f, 0x77, 0x65,
+	0xf8, 0x9b, 0x0b, 0xdc, 0x6a, 0xfe, 0x0d, 0x82, 0xef, 0x2b, 0x47, 0xff, 0xcf, 0x86, 0xb1, 0x1f,
+	0xd8, 0xa3, 0xb5, 0x16, 0x75, 0x28, 0x26, 0x97, 0x41, 0x4a, 0x60, 0x4b, 0x26, 0xe4, 0x1b, 0x94,
+	0xc4, 0x6d, 0x90, 0xc3, 0xb0, 0x95, 0x66, 0x2f, 0x0a, 0x6a, 0x9e, 0xc2, 0x2d, 0x82, 0xe6, 0xeb,
+	0x1d, 0x7c, 0xda, 0x02, 0x6d, 0x65, 0xd1, 0x37, 0x26, 0x4f, 0xba, 0x32, 0x99, 0xe9, 0x68, 0x3a,
+	0xd3, 0xd1, 0xe3, 0x4c, 0x47, 0x77, 0x73, 0x5d, 0x99, 0xce, 0x75, 0xe5, 0x7e, 0xae, 0x2b, 0x47,
+	0xe2, 0xbd, 0x70, 0x4a, 0xe2, 0x1d, 0xf8, 0xf3, 0x1c, 0x00, 0x00, 0xff, 0xff, 0x48, 0x9b, 0x78,
+	0x69, 0x48, 0x04, 0x00, 0x00,
 }
 
 func (m *Tag) Marshal() (dAtA []byte, err error) {
@@ -511,10 +482,6 @@ func (m *Tag) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Value) > 0 {
 		i -= len(m.Value)
 		copy(dAtA[i:], m.Value)
@@ -552,10 +519,6 @@ func (m *PointInt) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Value != 0 {
 		i = encodeVarintTs(dAtA, i, uint64(m.Value))
 		i--
@@ -589,10 +552,6 @@ func (m *PointIntTagged) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Tags) > 0 {
 		for iNdEx := len(m.Tags) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -647,10 +606,6 @@ func (m *PointDouble) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Value != 0 {
 		i -= 8
 		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Value))))
@@ -685,10 +640,6 @@ func (m *PointDoubleTagged) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Tags) > 0 {
 		for iNdEx := len(m.Tags) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -743,10 +694,6 @@ func (m *EmptySeries) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Tags) > 0 {
 		for iNdEx := len(m.Tags) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -791,10 +738,6 @@ func (m *SeriesIntTagged) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Tags) > 0 {
 		for iNdEx := len(m.Tags) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -853,10 +796,6 @@ func (m *SeriesDoubleTagged) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Tags) > 0 {
 		for iNdEx := len(m.Tags) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -915,10 +854,6 @@ func (m *SeriesIntTaggedColumnar) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Tags) > 0 {
 		for iNdEx := len(m.Tags) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -1001,10 +936,6 @@ func (m *SeriesDoubleTaggedColumnar) MarshalToSizedBuffer(dAtA []byte) (int, err
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Tags) > 0 {
 		for iNdEx := len(m.Tags) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -1083,9 +1014,6 @@ func (m *Tag) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTs(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1100,9 +1028,6 @@ func (m *PointInt) Size() (n int) {
 	}
 	if m.Value != 0 {
 		n += 1 + sovTs(uint64(m.Value))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1125,9 +1050,6 @@ func (m *PointIntTagged) Size() (n int) {
 			n += 1 + l + sovTs(uint64(l))
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1142,9 +1064,6 @@ func (m *PointDouble) Size() (n int) {
 	}
 	if m.Value != 0 {
 		n += 9
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1167,9 +1086,6 @@ func (m *PointDoubleTagged) Size() (n int) {
 			n += 1 + l + sovTs(uint64(l))
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1188,9 +1104,6 @@ func (m *EmptySeries) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovTs(uint64(l))
 		}
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1217,9 +1130,6 @@ func (m *SeriesIntTagged) Size() (n int) {
 			n += 1 + l + sovTs(uint64(l))
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1244,9 +1154,6 @@ func (m *SeriesDoubleTagged) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovTs(uint64(l))
 		}
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1281,9 +1188,6 @@ func (m *SeriesIntTaggedColumnar) Size() (n int) {
 			n += 1 + l + sovTs(uint64(l))
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1312,9 +1216,6 @@ func (m *SeriesDoubleTaggedColumnar) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovTs(uint64(l))
 		}
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1433,7 +1334,6 @@ func (m *Tag) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -1525,7 +1425,6 @@ func (m *PointInt) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -1678,7 +1577,6 @@ func (m *PointIntTagged) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -1762,7 +1660,6 @@ func (m *PointDouble) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -1915,7 +1812,6 @@ func (m *PointDoubleTagged) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2035,7 +1931,6 @@ func (m *EmptySeries) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2189,7 +2084,6 @@ func (m *SeriesIntTagged) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2343,7 +2237,6 @@ func (m *SeriesDoubleTagged) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2615,7 +2508,6 @@ func (m *SeriesIntTaggedColumnar) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2865,7 +2757,6 @@ func (m *SeriesDoubleTaggedColumnar) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}

@@ -1,4 +1,4 @@
-// protoc --proto_path=/home/at15/workspace/src/:. --gogo_out=. ts.proto
+// protoc --proto_path=$GOPATH/src/:. --gogo_out=. ts.proto
 syntax = "proto3";
 package tspb;
 
@@ -11,10 +11,14 @@ option (gogoproto.marshaler_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 option (gogoproto.goproto_getters_all) = false;
 
-// TODO: remove following fields from generated struct, this double the size for struct like PointInt
+// Avoid generating fields because most types are very simple
+// Thanks to https://github.com/thanos-io/thanos/blob/master/pkg/store/storepb/rpc.proto
 // 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 //	XXX_unrecognized     []byte   `json:"-"`
 //	XXX_sizecache        int32    `json:"-"`
+option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
+option (gogoproto.goproto_sizecache_all) = false;
 
 message Tag {
     string key = 1;
