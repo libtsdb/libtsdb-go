@@ -10,16 +10,22 @@ Required list in readme
 - a short overview
 - a key take way from this database
 
-Required files for describing each database. 
+Required files for describing each database.
+
+Code walk through
+
+- **read.md** Read path, link to source w/ commit hash.
+- **write.md** Write path, link to source w/ commit hash.
+
+API
+
+- **protocol.md** Wire protocol format and transport, mainly about write because many TSDB have dedicated query language.
+- **query-language.md** Query language.
 
 Internal
 
 - **model.md** General data model, what is a time series for this TSDB (yeah, this definition varies).
-- **write.md** Write path, link to source w/ commit hash.
-- **protocol.md** Wire protocol format and transport, mainly about write because many TSDB have dedicated query language.
-- **read.md** Read path, link to source w/ commit hash.
-- **query-language.md** Query language.
-- **query-execution.md** Query execution and optimization, especially for distributed ones.
+- **query-execution.md** Query execution and optimization, especially for those with query language and distributed ones.
 - **storage-engine.md** Only applies to TSDB w/ their own storage format, i.e. write opaque blob to local fs or object store.
 - **schema.md** Only applies to TSDB w/ underlying database i.e. Cassandra, ElasticSearch
 - **distributed.md** Only applies to distributed TSDB, replication model, consensus protocol. Including those built on top of distributed data store i.e. Cassandra, S3.
