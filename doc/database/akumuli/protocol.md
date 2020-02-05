@@ -54,7 +54,7 @@ this is very similar to InfluxDB's style
 ````json
 {
     "select": "balancers.cpuload",
-		 "range": {
+		"range": {
         "from": "20120102T123000.000000",
         "to":   "20190102T123010.000000"
     }
