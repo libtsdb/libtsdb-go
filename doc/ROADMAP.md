@@ -4,7 +4,7 @@
 
 ### v0.0.2
 
-- estimated time: 1-2 weeks, can't working on it fulltime 
+- estimated time: 1-2 weeks
 
 - [ ] implement and explain common compression in the compression package
   - [ ] delta

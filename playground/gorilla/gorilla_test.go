@@ -2,6 +2,7 @@ package gorilla_test
 
 import (
 	"encoding/binary"
+	"io"
 	"testing"
 	"time"
 
@@ -71,7 +72,92 @@ func (b *bits) writeBits(u uint64, n uint) {
 	}
 }
 
-func TestBits(t *testing.T) {
+type bitsReader struct {
+	buf      []byte
+	// TODO: it seems reading through bits is destructive, i.e. you can't read it again when read is not aligned to byte boundary
+	original []byte
+	remain   uint8
+}
+
+func newReader(b []byte) *bitsReader {
+	remain := 0
+	if len(b) != 0 {
+		remain = 8
+	}
+	return &bitsReader{
+		buf:      b,
+		original: b,
+		remain:   uint8(remain),
+	}
+}
+
+func (r *bitsReader) readBit() (bool, error) {
+	if r.remain == 0 {
+		if len(r.buf) < 1 {
+			return false, io.EOF
+		}
+		r.buf = r.buf[1:]
+		r.remain = 8
+	}
+
+	b := r.buf[0] & 0b1000_0000
+	r.buf[0] <<= 1
+	r.remain--
+	return b != 0, nil
+}
+
+func (r *bitsReader) readByte() (byte, error) {
+	if r.remain == 0 {
+		if len(r.buf) < 1 {
+			return 0, io.EOF
+		}
+		r.buf = r.buf[1:]
+		return r.buf[0], nil
+	}
+
+	if len(r.buf) < 1 {
+		return 0, io.EOF
+	}
+
+	byt := r.buf[0] // NOTE: we don't need to r.buf[0] << 8 - r.remain because we already did it before
+	r.buf = r.buf[1:]
+	byt |= r.buf[0] >> r.remain
+	r.buf[0] <<= 8 - r.remain // remove bytes already read
+	return byt, nil
+}
+
+func (r *bitsReader) readBits(n int) (uint64, error)  {
+	var u uint64
+	for n >= 8 {
+		byt, err := r.readByte()
+		if err != nil {
+			return 0, err
+		}
+		u = (u << 8) | uint64(byt)
+		n -= 8
+	}
+
+	if n == 0 {
+		return u, nil
+	}
+
+	if n > int(r.remain) {
+		// NOTE: we use >> (8 - r.remain) because we used << (8 - r.remain) in readByte
+		u = (u  << r.remain) | uint64(r.buf[0] >> (8 - r.remain))
+		n -= int(r.remain)
+		r.buf = r.buf[1:]
+		if len(r.buf) == 0 {
+			return 0, io.EOF
+		}
+	}
+
+	u = (u << n) | uint64(r.buf[0] >> (8 - n))
+	r.buf[0] <<= n
+	r.remain -= uint8(n)
+	return u, nil
+}
+
+func TestBitsWriter(t *testing.T) {
 	t.Run("writeBit", func(t *testing.T) {
 		bs := newBits()
 		for i := 0; i < 8; i++ {
@@ -99,6 +185,23 @@ func TestBits(t *testing.T) {
 		assert.Equal(t, bs.i, 3)
 	})
 
+}
+
+func TestBitsReader(t *testing.T)  {
+	w := newBits()
+	w.writeBit(true)
+	w.writeByte(1)
+	cp := make([]byte, len(w.buf))
+	copy(cp, w.buf)
+	r := newReader(w.buf)
+	b1, e1 := r.readBit()
+	assert.Nil(t, e1)
+	assert.Equal(t, true, b1)
+	byt2, e2 := r.readByte()
+	assert.Nil(t, e2)
+	assert.Equal(t, uint8(1), byt2)
+	// FIXME: the original bytes is destroyed ....
+	assert.Equal(t, cp, w.buf)
 }
 
 // encoder encodes time stream, i.e. it does not mix value into same stream
@@ -193,7 +296,7 @@ func TestUint64(t *testing.T) {
 	// cast is using the same bytes, but
 	a := int64(-1)
 	b := uint64(a)
-	c := int64(a)
+	c := int64(b)
 	t.Log(a, b, c) // -1 18446744073709551615 -1
 }
 
