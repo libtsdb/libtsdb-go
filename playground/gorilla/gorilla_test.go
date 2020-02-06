@@ -3,6 +3,7 @@ package gorilla_test
 import (
 	"encoding/binary"
 	"io"
+	"log"
 	"testing"
 	"time"
 
@@ -130,6 +131,7 @@ func (r *bitsReader) readByte() (byte, error) {
 }
 
 func (r *bitsReader) readBits(n int) (uint64, error) {
+	// TODO: return error when n is larger than 64?
 	var u uint64
 	for n >= 8 {
 		byt, err := r.readByte()
@@ -237,13 +239,16 @@ func (e *encoder) write(tm uint64) {
 	// double delta
 	delta := tm - e.prevTime
 	dod := int64(delta - e.delta)
+	log.Printf("dod %d", dod)
 	e.delta = delta
 	switch {
 	case dod == 0:
 		e.bs.writeBit(false)
 	case dod <= 64 && dod >= -63:
+		log.Printf("dod write before %d %v", uint64(dod), e.bs.buf)
 		e.bs.writeBits(0b10, 2)
 		e.bs.writeBits(uint64(dod), 7)
+		log.Printf("dod write after %d %v", uint64(dod), e.bs.buf)
 	case dod <= 256 && dod > -255:
 		e.bs.writeBits(0b110, 3)
 		e.bs.writeBits(uint64(dod), 9)
@@ -262,25 +267,47 @@ func TestDoubleDelta(t *testing.T) {
 	start := mtime("2015-03-24T02:00:00Z")
 	t1 := mtime("2015-03-24T02:01:02Z")
 	t2 := mtime("2015-03-24T02:02:02Z")
-	t3 := mtime("2015-03-24T02:03:02Z")
+	//t3 := mtime("2015-03-24T02:03:02Z")
 	enc := newEncoder(start)
 	enc.write(t1)
 	enc.write(t2)
-	enc.write(t3)
+	//enc.write(t3)
+	r := newReader(enc.bs.buf)
+	log.Printf("%v", r.buf)
 	// first 64 bytes is the header
 	var b8 [8]byte
 	binary.BigEndian.PutUint64(b8[:], start)
-	assert.Equal(t, enc.bs.buf[0], b8[0])
-	assert.Equal(t, enc.bs.buf[7], b8[7])
+	for i := 0; i < 8; i++ {
+		b, err := r.readByte()
+		assert.Nil(t, err)
+		assert.Equal(t, b8[i], b)
+	}
+	log.Printf("b8 %v buf %v", b8, r.buf)
 	// the next 14 bits is the first time using delta
 	// 62 is 111110, first 8 bits is empty, next 6 bits is the value
-	assert.Equal(t, byte(0), enc.bs.buf[8])
-	assert.Equal(t, byte(62), enc.bs.buf[9]>>2)
+	delta, _ := r.readBits(14)
+	assert.Equal(t, uint64(0b1111_10), delta)
+	assert.Equal(t, t1-start, delta)
 	// the first double delta encoded value, dict is 10, value is -2
-	assert.Equal(t, byte(0b10), enc.bs.buf[9]&0b11)
-	// TODO: value is 7 bit ... e, I need a bit reader implementation
-	//assert.Equal(t, byte(-2), enc.bs.buf[10] )
-	//assert.Equal(t, byte(t2-t1), enc.bs.buf[9]>>2)
+	dict, _ := r.readBits(2)
+	assert.Equal(t, uint64(0b10), dict)
+	// FIXME: got 0 while it should be -2, is it because it's the last byte?
+	log.Printf("%v", r.buf)
+	v, err := r.readBits(7)
+	log.Printf("%v", r.buf)
+	assert.Nil(t, err)
+	log.Print(v)
+	assert.Equal(t, -2, uint2int(v, 7))
+}
+
+// TODO: why this work ...
+// https://stackoverflow.com/questions/4975340/int-to-unsigned-int-conversion ?
+func uint2int(v uint64, sz int) int64 {
+	if v > (1 << (sz - 1)) {
+		// or something
+		v = v - (1 << sz)
+	}
+	return int64(v)
 }
 
 func subu64(a, b uint64) int64 {
@@ -299,6 +326,18 @@ func TestUint64(t *testing.T) {
 	b := uint64(a)
 	c := int64(b)
 	t.Log(a, b, c) // -1 18446744073709551615 -1
+
+	bs := newBits()
+	three := uint64(3)
+	five := uint64(5)
+	a = int64(three - five)
+	bs.writeBits(uint64(a), 7)
+	t.Logf("%v", bs.buf)
+	br := newReader(bs.buf)
+	v, _ := br.readBits(7)
+	v2 := uint2int(v, 7)
+	t.Logf("%d %d %d", v, int64(v), v2)
+	assert.Equal(t, int64(-2), v2)
 }
 
 // given a RFC3339 string returns a unix epoch, panic if failed to convert
