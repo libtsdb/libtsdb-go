@@ -72,9 +72,9 @@ func (b *bits) writeBits(u uint64, n uint) {
 	}
 }
 
+// bitsReader follows the modified version in prometheus where the underlying byte is not modified when read
 type bitsReader struct {
 	buf      []byte
-	// TODO: it seems reading through bits is destructive, i.e. you can't read it again when read is not aligned to byte boundary
 	original []byte
 	remain   uint8
 }
@@ -91,6 +91,10 @@ func newReader(b []byte) *bitsReader {
 	}
 }
 
+func (r *bitsReader) reset() {
+	r.buf = r.original
+}
+
 func (r *bitsReader) readBit() (bool, error) {
 	if r.remain == 0 {
 		if len(r.buf) < 1 {
@@ -101,7 +105,6 @@ func (r *bitsReader) readBit() (bool, error) {
 	}
 
 	b := r.buf[0] & 0b1000_0000
-	r.buf[0] <<= 1
 	r.remain--
 	return b != 0, nil
 }
@@ -115,18 +118,18 @@ func (r *bitsReader) readByte() (byte, error) {
 		return r.buf[0], nil
 	}
 
+	// We need to read a byte that cross two bytes
 	if len(r.buf) < 1 {
 		return 0, io.EOF
 	}
 
-	byt := r.buf[0] // NOTE: we don't need to r.buf[0] << 8 - r.remain because we already did it before
+	byt := r.buf[0] << (8 - r.remain)
 	r.buf = r.buf[1:]
 	byt |= r.buf[0] >> r.remain
-	r.buf[0] <<= 8 - r.remain // remove bytes already read
 	return byt, nil
 }
 
-func (r *bitsReader) readBits(n int) (uint64, error)  {
+func (r *bitsReader) readBits(n int) (uint64, error) {
 	var u uint64
 	for n >= 8 {
 		byt, err := r.readByte()
@@ -142,17 +145,16 @@ func (r *bitsReader) readBits(n int) (uint64, error)  {
 	}
 
 	if n > int(r.remain) {
-		// NOTE: we use >> (8 - r.remain) because we used << (8 - r.remain) in readByte
-		u = (u  << r.remain) | uint64(r.buf[0] >> (8 - r.remain))
+		u = (u << r.remain) | uint64((r.buf[0]<<(8-r.remain))>>(8-r.remain))
 		n -= int(r.remain)
 		r.buf = r.buf[1:]
 		if len(r.buf) == 0 {
 			return 0, io.EOF
 		}
+		r.remain = 0
 	}
 
-	u = (u << n) | uint64(r.buf[0] >> (8 - n))
-	r.buf[0] <<= n
+	u = (u << n) | uint64((r.buf[0]<<(8-r.remain))>>(8-n))
 	r.remain -= uint8(n)
 	return u, nil
 }
@@ -187,7 +189,7 @@ func TestBitsWriter(t *testing.T) {
 
 }
 
-func TestBitsReader(t *testing.T)  {
+func TestBitsReader(t *testing.T) {
 	w := newBits()
 	w.writeBit(true)
 	w.writeByte(1)
@@ -200,7 +202,6 @@ func TestBitsReader(t *testing.T)  {
 	byt2, e2 := r.readByte()
 	assert.Nil(t, e2)
 	assert.Equal(t, uint8(1), byt2)
-	// FIXME: the original bytes is destroyed ....
 	assert.Equal(t, cp, w.buf)
 }
 
