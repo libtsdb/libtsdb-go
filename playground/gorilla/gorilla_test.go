@@ -153,7 +153,8 @@ func (r *bitsReader) readBits(n int) (uint64, error) {
 		if len(r.buf) == 0 {
 			return 0, io.EOF
 		}
-		r.remain = 0
+		// FIXED: took me a while to find it ...
+		r.remain = 8
 	}
 
 	u = (u << n) | uint64((r.buf[0]<<(8-r.remain))>>(8-n))
@@ -245,10 +246,11 @@ func (e *encoder) write(tm uint64) {
 	case dod == 0:
 		e.bs.writeBit(false)
 	case dod <= 64 && dod >= -63:
-		log.Printf("dod write before %d %v", uint64(dod), e.bs.buf)
+		log.Printf("dod write before %d %v", dod, e.bs.buf)
 		e.bs.writeBits(0b10, 2)
+		log.Printf("dod write middle %d %v", dod, e.bs.buf)
 		e.bs.writeBits(uint64(dod), 7)
-		log.Printf("dod write after %d %v", uint64(dod), e.bs.buf)
+		log.Printf("dod write after %d %v", dod, e.bs.buf)
 	case dod <= 256 && dod > -255:
 		e.bs.writeBits(0b110, 3)
 		e.bs.writeBits(uint64(dod), 9)
@@ -335,6 +337,85 @@ func TestUint64(t *testing.T) {
 	t.Logf("%v", bs.buf)
 	br := newReader(bs.buf)
 	v, _ := br.readBits(7)
+	v2 := uint2int(v, 7)
+	t.Logf("%d %d %d", v, int64(v), v2)
+	assert.Equal(t, int64(-2), v2)
+}
+
+func TestReadNegative(t *testing.T)  {
+	start := mtime("2015-03-24T02:00:00Z")
+	t1 := mtime("2015-03-24T02:01:02Z")
+	t2 := mtime("2015-03-24T02:02:02Z")
+
+	bs := newBits()
+	bs.writeBits(start, 64)
+	bs.writeBits(t1 - start, 14)
+	dod := int64((t2 - t1) - (t1 - start))
+	bs.writeBits(uint64(0b10), 2)
+	bs.writeBits(uint64(dod), 7)
+	// b8       [0 0 0 0 85 16 197 32]
+	// expected [0 0 0 0 85 16 197 32 0 250 252]
+	log.Printf("%v", bs.buf)
+	r := newReader(bs.buf)
+	var b8 [8]byte
+	binary.BigEndian.PutUint64(b8[:], start)
+	for i := 0; i < 8; i++ {
+		b, err := r.readByte()
+		assert.Nil(t, err)
+		assert.Equal(t, b8[i], b)
+	}
+	delta, _ := r.readBits(14)
+	assert.Equal(t, uint64(0b1111_10), delta)
+	assert.Equal(t, t1-start, delta)
+	dict, _ := r.readBits(2)
+	assert.Equal(t, uint64(0b10), dict)
+	log.Printf("%v", r.buf)
+	v, _ := r.readBits(7)
+	log.Printf("%d %v", v, r.buf)
+	v2 := uint2int(v, 7)
+	t.Logf("%d %d %d", v, int64(v), v2)
+	assert.Equal(t, int64(-2), v2)
+}
+
+func TestReadNegative2(t *testing.T)  {
+	bs := newBits()
+	bs.writeBits(uint64(0b10), 2)
+	three := uint64(3)
+	five := uint64(5)
+	a := int64(three - five)
+	bs.writeBits(uint64(a), 7)
+	t.Logf("%v", bs.buf)
+	br := newReader(bs.buf)
+	br.readBits(2)
+	v, _ := br.readBits(7)
+	v2 := uint2int(v, 7)
+	t.Logf("%d %d %d", v, int64(v), v2)
+	assert.Equal(t, int64(-2), v2)
+}
+
+func TestReadNegative3(t *testing.T)  {
+	three := uint64(3)
+	five := uint64(5)
+	dod := int64(three - five)
+	bs := newBits()
+	bs.writeBits(62, 14)
+	bs.writeBits(uint64(0b10), 2)
+	bs.writeBits(uint64(dod), 7)
+	// [0 250 252]
+	t.Logf("%v", bs.buf)
+	br := newReader(bs.buf)
+	v, _ := br.readBits(14)
+	assert.Equal(t, uint64(62), v)
+	assert.Equal(t, uint8(2), br.remain)
+
+	v, _ = br.readBits(2)
+	assert.Equal(t, uint64(0b10), v)
+	assert.Equal(t, uint8(0), br.remain)
+
+	v, err := br.readBits(7)
+	assert.Nil(t, err)
+	assert.Equal(t, uint8(1), br.remain)
+	t.Logf("%d", v)
 	v2 := uint2int(v, 7)
 	t.Logf("%d %d %d", v, int64(v), v2)
 	assert.Equal(t, int64(-2), v2)
