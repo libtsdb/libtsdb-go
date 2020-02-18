@@ -299,7 +299,7 @@ func TestDoubleDelta(t *testing.T) {
 	log.Printf("%v", r.buf)
 	assert.Nil(t, err)
 	log.Print(v)
-	assert.Equal(t, -2, uint2int(v, 7))
+	assert.Equal(t, int64(-2), uint2int(v, 7))
 }
 
 // TODO: why this work ...

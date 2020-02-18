@@ -25,6 +25,7 @@ API
 Internal
 
 - **model.md** General data model, what is a time series for this TSDB (yeah, this definition varies).
+- **compression.md** Compression related algorithm or code.
 - **query-execution.md** Query execution and optimization, especially for those with query language and distributed ones.
 - **storage-engine.md** Only applies to TSDB w/ their own storage format, i.e. write opaque blob to local fs or object store.
 - **schema.md** Only applies to TSDB w/ underlying database i.e. Cassandra, ElasticSearch
