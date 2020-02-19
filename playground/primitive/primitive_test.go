@@ -45,3 +45,27 @@ func unsafeInt2Bytes(v uint64) []byte {
 	}
 	return *(*[]byte)(unsafe.Pointer(&hdr))
 }
+
+func TestIntOverflow(t *testing.T)  {
+	a := int32(200)
+	a = a * 300 * 400 * 500
+	t.Logf("%d", a) // overflow -884901888
+
+	b := uint32(200)
+	b = b * 300 * 400 * 500
+	t.Logf("%d", b) // 3410065408
+
+	c := 200
+	c = c * 300 * 400 * 500
+	t.Logf("%d", c) // 12000000000
+
+	// int32  -884901888
+	// uint32 3410065408
+	// int64  12000000000
+}
+
+func TestSignedUnsigned(t *testing.T)  {
+	a := int8(-1) // 1111_1111 = -2^7 + (2^7 - 1) = -128 + 127
+	b := uint8(a) // ......... = 2^7 + (2^7 - 1) = 128 + 127 = 255
+	t.Logf("%d %d", a, b) // -1, 255
+}
