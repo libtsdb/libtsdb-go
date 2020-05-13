@@ -21,7 +21,7 @@ test:
 
 .PHONY: fmt
 fmt:
-	goimports -d -l -w $(PKGST)
+	goimports -d -l -w $(PKGST) ./playground
 
 .PHONY: generate
 generate:
