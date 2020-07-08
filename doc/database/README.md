@@ -1,5 +1,7 @@
 # Databases
 
+Deprecated: the content is being moved to [notes-on-tsdb](https://github.com/xephonhq/notes-on-tsdb).
+
 This folder contains notes on implementation of TSDBs.
 They should be merged into [awesome-time-series-database](https://github.com/xephonhq/awesome-time-series-database) eventually.
 

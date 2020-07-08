@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 )
 
-// Buffer is a dump struct that wraps around a byte slice, it does not handle grow like bytes.Buffer
+// Buffer is a dumb struct that wraps around a byte slice, it does not handle grow like bytes.Buffer
 // but it can be used directly with Append* style function which requires a byte slice directly
 type Buffer struct {
 	Buf []byte
